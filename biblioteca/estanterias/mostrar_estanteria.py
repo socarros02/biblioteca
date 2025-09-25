@@ -48,12 +48,8 @@ def abrir_mostrar_estanteria(frame,estanteria,controller,self):
     busqueda.columnconfigure(0, weight=3)
     busqueda.columnconfigure(1, weight=1)
 
-    txt_prestar_libro=ctk.CTkEntry(busqueda, placeholder_text="Ingrese el titulo que se va a prestar....")
-    txt_prestar_libro.grid(row=1, column=0, sticky="nsew", padx=5, pady=20)
 
     def prestar():
-        titulo = int(txt_prestar_libro.get())
-        db.prestar_libro(titulo)
         abrir_mostrar_estanteria(frame, estanteria, controller, self)
 
     btn_prestar_libro = ctk.CTkButton(busqueda, text="Prestar", command=lambda: prestar())

@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 from customtkinter import CTkLabel
-import base_datos as db
+from data_base import data_base as db
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
 ctk.set_default_color_theme("blue")
 
@@ -11,6 +11,7 @@ libro=0
 
 def mostrar_libro_autor(frame,autor,controller):
 
+    controller.libros = db.get_libros()
 
     contenedor = ctk.CTkFrame(frame, corner_radius=15)
     contenedor.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
@@ -60,7 +61,7 @@ def mostrar_libro_autor(frame,autor,controller):
         existe = -1
 
         titulo = txt_buscar_titulo.get()
-        for i in range(len(db.libros)):
+        for i in range(len(controller.libros)):
             if titulo == controller.libros[i]['titulo']:
                 libro = controller.libros[i]
                 existe = i
@@ -75,8 +76,8 @@ def mostrar_libro_autor(frame,autor,controller):
     def buscar_codigo():
         libro = None
         existe = -1
-        codigo = int(txt_buscar_codigo.get())
-        for i in range(len(db.libros)):
+        codigo = txt_buscar_codigo.get()
+        for i in range(len(controller.libros)):
             if codigo == controller.libros[i]['codigo']:
                 libro = controller.libros[i]
                 existe = i

@@ -1,7 +1,6 @@
 import numpy as np
 import customtkinter as ctk
-import interfaz_estanteria as iu_estanteria
-import base_datos as db
+from data_base import data_base as db
 
 # Configuración de apariencia
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
@@ -10,71 +9,49 @@ ctk.set_default_color_theme("blue")  # "blue", "green", "dark-blue"
 
 
 
-def crear_estanteria(frame,controller,biblioteca):
+def crear_estanteria(frame,controller):
+
+    frame.columnconfigure(0, weight=1)
+    frame.rowconfigure(0, weight=1)
+
+    lbl_header = ctk.CTkLabel(frame,fg_color="transparent")
+    lbl_header.grid(row=0, column=0, sticky="nsew")
+
 
     contenedor = ctk.CTkFrame(frame, corner_radius=15)
-    contenedor.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+    contenedor.grid(row=0, column=0, sticky="nsew")
 
-    lbl_titulo = ctk.CTkLabel(
-        contenedor,
-        text="Ingrese la nueva estantería (máximo 10x10)",
-        fg_color="blue",
-        text_color="white",
-        corner_radius=10,
-        padx=10,
-        pady=5
-    )
-    lbl_titulo.grid(row=0, column=0, columnspan=3, sticky="nsew", pady=10)
+    contenedor.columnconfigure(0, weight=1)
 
 
-    lbl_filas = ctk.CTkLabel(frame, text="Cantidad de filas:")
-    lbl_filas.grid(row=1, column=0, padx=5, pady=5, sticky="e")
+    txt_nombre_estanteria = ctk.CTkEntry(contenedor, placeholder_text="Ingresar nombre de estaneria nueva.....")
+    txt_nombre_estanteria.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-    txt_filas = ctk.CTkEntry(frame, placeholder_text="Ej: 5")
-    txt_filas.grid(row=1, column=1, padx=5, pady=5)
+    txt_capacidad_maxima = ctk.CTkEntry(contenedor, placeholder_text="buscar libro por codigo...")
+    txt_capacidad_maxima.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-    lbl_columnas = ctk.CTkLabel(frame, text="Cantidad de columnas:")
-    lbl_columnas.grid(row=2, column=0, padx=5, pady=5, sticky="e")
+    lbl_error = ctk.CTkLabel(contenedor, text="", text_color="red")
+    lbl_error.grid(row=2, column=0, pady=5, sticky="ew")
 
-    txt_columnas = ctk.CTkEntry(frame, placeholder_text="Ej: 7")
-    txt_columnas.grid(row=2, column=1, padx=5, pady=5)
+    def validar_ingreso():
+        nombre = txt_nombre_estanteria.get()
+        capacidad_maxima = txt_capacidad_maxima.get()
+        if not nombre or not capacidad_maxima:
+            lbl_error.configure(text="Error: complete todos los campos")
+            return
 
-
-    def generar_estanteria():
         try:
-            filas = int(txt_filas.get())
-            columnas = int(txt_columnas.get())
-
-            if filas <= 0 or columnas <= 0 or filas > 10 or columnas > 10:
-                lbl_error = ctk.CTkLabel(
-                    frame,
-                    text="Número inválido. Ingrese un valor mayor a 0 y menor o igual a 10",
-                    fg_color="red",
-                    text_color="white",
-                    corner_radius=8,
-                    padx=10,
-                    pady=5
-                )
-
-                lbl_error.grid(row=4, column=0, columnspan=3, sticky="nsew", pady=5)
-                return
-
-            estanteria = np.zeros((filas, columnas), dtype=object)
-            codigo_estanteria = len(biblioteca)+1
-
-            controller.biblioteca.append({
-                "codigo": codigo_estanteria,
-                "estanteria": estanteria,
-                "filas": filas,
-                "columnas": columnas
-            })
-            controller.mostrar_frame("VentanaPrincipal")
-
+            capacidad = int(capacidad_maxima)
+            if capacidad <= 0:
+                raise ValueError
         except ValueError:
-            print("Debes ingresar números válidos")
+            lbl_error.configure(text="Error: complete todos los campos")
+            return
 
+        db.nueva_estanteria(nombre, capacidad)
+        controller.mostrar_frame("VentanaPrincipal")
 
-    boton_crear = ctk.CTkButton(frame, text="Crear estantería", command=generar_estanteria)
-    boton_crear.grid(row=3, column=0, columnspan=2, pady=15)
+    btn_crear_estanteria = ctk.CTkButton(contenedor, text="crear", command=validar_ingreso,width=200)
+    btn_crear_estanteria.grid(row=3, column=0, padx=5, pady=5)
 
 

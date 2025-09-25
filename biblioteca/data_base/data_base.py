@@ -18,9 +18,8 @@ def get_libros():
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT libros.id, libros.titulo, libros.fecha, autores.name
+                   SELECT isbn,titulo,fecha_publicacion,autor
                    FROM libros
-                            JOIN autores ON libros.autor_id = autores.id
                    """)
     rows = cursor.fetchall()
     conn.close()
@@ -33,10 +32,9 @@ def get_libro_por_titulo(titulo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT libros.id, libros.titulo, libros.fecha, autores.name
+                   SELECT isbn,titulo,fecha_publicacion,autor
                    FROM libros
-                            JOIN autores ON libros.autor_id = autores.id
-                   WHERE libros.titulo = ?
+                   WHERE titulo = ?
                    """, (titulo,))
     row = cursor.fetchone()
     conn.close()
@@ -48,10 +46,9 @@ def get_libro_por_codigo(codigo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT libros.id, libros.titulo, libros.fecha, autores.name
+                   SELECT isbn,titulo,fecha_publicacion,autor
                    FROM libros
-                            JOIN autores ON libros.autor_id = autores.id
-                   WHERE libros.id = ?
+                   WHERE isbn = ?
                    """, (codigo,))
     row = cursor.fetchone()
     conn.close()
@@ -65,9 +62,9 @@ def get_libros_por_autor(nombre_autor):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT name
-        FROM autores
-        WHERE name = ?
+        SELECT autor
+        FROM libros
+        WHERE autor = ?
     """, (nombre_autor,))
     row = cursor.fetchone()
     conn.close()
@@ -100,18 +97,13 @@ def get_estanteria_completa(codigo_estanteria):
     cursor.execute("""
     SELECT e.id_ejemplar,l.titulo
     FROM ejemplares e
-    JOIN libros l ON e.id_libro = l.id
+    JOIN libros l ON e.id_libro = l.isbn
     where e.id_estanteria = ?;
     """, (codigo_estanteria,))
     rows = cursor.fetchall()
     conn.close()
-
-
     return [
-        {
-            "ejemplar": r[0],
-            "titulo": r[1]
-        }
+        {"ejemplar": r[0],"titulo": r[1]}
         for r in rows
     ]
 
@@ -125,13 +117,47 @@ def prestar_libro(ejemplar):
     """, (ejemplar,))
     conn.commit()
     conn.close()
-##create_db()
-##create_table()
-##create_table_libro()
-##create_table_ejemplar()
+
+def nueva_estanteria(nombre,capacidad):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+                    INSERT INTO estanterias(nombre,capacidad_maxima)values 
+                    (?,?)
+                   
+                   """, (nombre, capacidad,))
+    conn.commit()
+    conn.close()
 
 
 
+def get_ejemplares_especificos(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT ej.id_ejemplar,es.nombre,ej.disponible
+    from ejemplares ej
+    join estanterias es on es.id = ej.id_estanteria
+    where id_libro = ?
+        """, (isbn,))
+    rows = cursor.fetchall()
+    conn.close()
+    return [
+        {"ejemplar": r[0], "estanteria": r[1],"disponible":r[2]}
+        for r in rows
+    ]
+
+def get_ejemplar_por_estanteria(estanteria,isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    select count(*)
+    from ejemplares
+    where id_estanteria = ? and id_libro = ?
+    """, (estanteria,isbn,))
+    cantidad = cursor.fetchall()[0]
+    conn.close()
+    return [cantidad]
 
 
 

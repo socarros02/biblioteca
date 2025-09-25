@@ -2,10 +2,10 @@ import customtkinter as ctk
 
 from data_base import data_base as db
 
-estanteriaG = 0
-# Configuración de apariencia global
-ctk.set_appearance_mode("dark")  # opciones: "light", "dark", "system"
-ctk.set_default_color_theme("blue")  # "blue", "green", "dark-blue"
+
+
+ctk.set_appearance_mode("dark")
+ctk.set_default_color_theme("blue")
 
 
 def posicion_estanteria(estanterias, codigo):
@@ -17,11 +17,19 @@ def posicion_estanteria(estanterias, codigo):
 
 
 def mostrar_estanterias_disponibles(biblioteca, frame):
-    columnas = 0
-    filas = 0
+
+    lista_frame = ctk.CTkFrame(frame, fg_color="transparent")
+    lista_frame.pack(fill="both", expand=True, pady=10)
+
+    fila_frame = None
     for i, estanteria in enumerate(biblioteca):
+
+        if i % 2 == 0:
+            fila_frame = ctk.CTkFrame(lista_frame, fg_color="transparent")
+            fila_frame.pack(fill="x", pady=2)
+
         label = ctk.CTkLabel(
-            frame,
+            fila_frame,
             text=f"{estanteria['nombre']} - código {estanteria['codigo']}",
             fg_color="lightblue",
             text_color="black",
@@ -29,11 +37,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame):
             padx=10,
             pady=5
         )
-        label.grid(row=filas, column=columnas, padx=5, pady=5, sticky="w")
-        columnas += 1
-        if columnas == 2:
-            columnas = 0
-            filas += 1
+        label.pack(side="left", padx=5, pady=5, fill="x", expand=True)
 
 
 def abrir_estanteria(frame,controller):
@@ -44,13 +48,23 @@ def abrir_estanteria(frame,controller):
     for widget in frame.winfo_children():
         widget.destroy()
 
+    header = ctk.CTkFrame(frame, fg_color="transparent",height=10)
+    header.pack( padx=5, pady=5)
+
     contenedor = ctk.CTkFrame(frame, corner_radius=15)
-    contenedor.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+    contenedor.pack(fill="both", expand=True, padx=20, pady=20)
+
+    lbl_header = ctk.CTkLabel(header, text= "Estanterias",corner_radius=15,font=("Arial",40))
+    lbl_header.pack(padx=5, pady=5,expand=True)
 
     mostrar_estanterias_disponibles(biblioteca, contenedor)
 
-    caja_texto_ingresar_codigo = ctk.CTkEntry(contenedor, placeholder_text="Código de estantería...")
-    caja_texto_ingresar_codigo.grid(row=len(biblioteca)+1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    busqueda_frame = ctk.CTkFrame(frame,fg_color="transparent")
+    busqueda_frame.pack(fill="x", pady=10,padx=10)
+
+
+    caja_texto_ingresar_codigo = ctk.CTkEntry(busqueda_frame, placeholder_text="Código de estantería...")
+    caja_texto_ingresar_codigo.pack(side="left", fill="x", expand=True, padx=5,pady=5)
 
     def elegir_estanteria():
         codigo = int(caja_texto_ingresar_codigo.get())
@@ -62,18 +76,13 @@ def abrir_estanteria(frame,controller):
         else:
             print("La estantería no existe")
 
-    boton_ver_estanteria = ctk.CTkButton(contenedor, text="Ver", command=elegir_estanteria)
-    boton_ver_estanteria.grid(row=len(biblioteca)+1, column=2, padx=5, pady=5)
+    boton_ver_estanteria = ctk.CTkButton(busqueda_frame, text="Ver", command=elegir_estanteria)
+    boton_ver_estanteria.pack(side="left", padx=5,pady=5)
 
-    # Crear nueva estantería
-    label_nueva_estanteria = ctk.CTkLabel(contenedor, text="Crear nueva estantería")
-    label_nueva_estanteria.grid(row=len(biblioteca)+2, column=0, padx=5, pady=5)
+    nueva_estanteria_frame = ctk.CTkFrame(frame,fg_color="transparent")
+    nueva_estanteria_frame.pack(fill="x", pady=10)
 
-    boton_nueva_estanteria = ctk.CTkButton(
-        contenedor,
-        text="Crear",
-        command=lambda: controller.mostrar_frame("VentanaCrearEstanteria")
-    )
-    boton_nueva_estanteria.grid(row=len(biblioteca)+2, column=1, padx=15, pady=15)
+    boton_nueva_estanteria = ctk.CTkButton(nueva_estanteria_frame,text="Crear nueva estanteria",command=lambda: controller.mostrar_frame("VentanaCrearEstanteria"),width=250)
+    boton_nueva_estanteria.pack(padx=5,pady=5)
 
 

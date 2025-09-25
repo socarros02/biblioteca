@@ -17,7 +17,7 @@ def mostrar_libros(frame,controller):
     controller.libros=db.get_libros()
 
 
-    contenedor = ctk.CTkFrame(frame, corner_radius=15)
+    contenedor = ctk.CTkFrame(frame, corner_radius=15,fg_color="transparent")
     contenedor.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
     contenedor.columnconfigure(0, weight=1)
     for i in range(5):
@@ -28,6 +28,7 @@ def mostrar_libros(frame,controller):
     controles.columnconfigure(0, weight=1)
     controles.columnconfigure(1, weight=1)
     controles.columnconfigure(2, weight=1)
+
 
     busqueda_y_carga = ctk.CTkFrame(frame)
     busqueda_y_carga.grid(row=2, column=0, sticky="nsew", padx=20, pady=20)
@@ -41,7 +42,6 @@ def mostrar_libros(frame,controller):
         posicion=0
         for widget in contenedor.winfo_children():
             widget.destroy()
-        print(controller.libros)
 
         while posicion!=5 and libro<len(controller.libros):
             libro_actual = controller.libros[libro]
@@ -66,7 +66,7 @@ def mostrar_libros(frame,controller):
             corner_radius=8,
             command=mostrar_siguiente
         )
-        btn_siguiente.grid(row=0, column=3, padx=5, pady=5)
+        btn_siguiente.grid(row=0, column=2, padx=5, pady=5,sticky="nsew")
         if libro > len(controller.libros) - 1:
             for widget in controles.winfo_children():
                 widget.destroy()
@@ -79,7 +79,7 @@ def mostrar_libros(frame,controller):
                 corner_radius=8,
                 command=mostrar_anterior
             )
-            btn_anterior.grid(row=0, column=0, padx=5, pady=5)
+            btn_anterior.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
 
     mostrar_siguiente()
@@ -110,7 +110,7 @@ def mostrar_libros(frame,controller):
             print("La estantería no existe")
 
     def buscar_codigo():
-        codigo = int(txt_buscar_codigo.get())
+        codigo = txt_buscar_codigo.get()
         libro = db.get_libro_por_codigo(codigo)
         if libro:
             controller.libro_seleccionado = libro
@@ -121,6 +121,7 @@ def mostrar_libros(frame,controller):
     def buscar_autor():
         autor = txt_buscar_autor.get()
         libros_autor = db.get_libros_por_autor(autor)
+        print(libros_autor)
         if libros_autor:
             controller.autor_seleccionado = autor
             controller.mostrar_frame("VentanaLibrosAutor")
