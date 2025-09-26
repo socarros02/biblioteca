@@ -13,13 +13,15 @@ def crear_estanteria(frame,controller):
 
     frame.columnconfigure(0, weight=1)
     frame.rowconfigure(0, weight=1)
+    frame.rowconfigure(1, weight=1)
 
-    lbl_header = ctk.CTkLabel(frame,fg_color="transparent")
+    lbl_header = ctk.CTkLabel(frame,text="Nueva Estanteria",fg_color="transparent",font=("Ariel",50,"bold"))
     lbl_header.grid(row=0, column=0, sticky="nsew")
 
 
-    contenedor = ctk.CTkFrame(frame, corner_radius=15)
-    contenedor.grid(row=0, column=0, sticky="nsew")
+
+    contenedor = ctk.CTkFrame(frame,fg_color="transparent")
+    contenedor.grid(row=1, column=0, sticky="nsew")
 
     contenedor.columnconfigure(0, weight=1)
 
@@ -27,7 +29,7 @@ def crear_estanteria(frame,controller):
     txt_nombre_estanteria = ctk.CTkEntry(contenedor, placeholder_text="Ingresar nombre de estaneria nueva.....")
     txt_nombre_estanteria.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-    txt_capacidad_maxima = ctk.CTkEntry(contenedor, placeholder_text="buscar libro por codigo...")
+    txt_capacidad_maxima = ctk.CTkEntry(contenedor, placeholder_text="Ingresar capacidad, maximo 150 libros.....")
     txt_capacidad_maxima.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
     lbl_error = ctk.CTkLabel(contenedor, text="", text_color="red")
@@ -42,7 +44,7 @@ def crear_estanteria(frame,controller):
 
         try:
             capacidad = int(capacidad_maxima)
-            if capacidad <= 0:
+            if capacidad <= 0 or capacidad > 150:
                 raise ValueError
         except ValueError:
             lbl_error.configure(text="Error: complete todos los campos")

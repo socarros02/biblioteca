@@ -34,14 +34,15 @@ def mostrar_libro_autor(frame,autor,controller):
     lbl_cabecera = CTkLabel(contenedor, corner_radius=15,font=("Arial", 25),text=f"Autor: {autor}")
     lbl_cabecera.grid(row=0, column=0, sticky="nsew", padx=5, pady=5,columnspan=4)
 
-    lbl_Titulo = CTkLabel(contenedor, text="Titulo", corner_radius=8, padx=5, pady=5, fg_color="black",text_color="white")
-    lbl_Titulo.grid(row=1, column=0, sticky="nsew")
+    lbl_Titulo = CTkLabel(contenedor, text="Titulo",padx=5, pady=5, text_color="#333333",fg_color="#F5EBE0")
+    lbl_Titulo.grid(row=1, column=0, sticky="nsew",padx=5, pady=5)
 
-    lbl_Codigo = CTkLabel(contenedor, text="Codigo",corner_radius=8, padx=5, pady=5, fg_color="black", text_color="white")
-    lbl_Codigo.grid(row=1, column=1, sticky="nsew")
+    lbl_Codigo = CTkLabel(contenedor, text="Codigo", padx=5, pady=5, text_color="#333333",fg_color="#F5EBE0")
+    lbl_Codigo.grid(row=1, column=1, sticky="nsew",padx=5, pady=5)
 
-    lbl_Lanzamiento = CTkLabel(contenedor, text="Año de publicacion",corner_radius=8, padx=5, pady=5, fg_color="black", text_color="white")
-    lbl_Lanzamiento.grid(row=1, column=2, sticky="nsew")
+    lbl_Lanzamiento = CTkLabel(contenedor, text="Año de publicacion", padx=5, pady=5, text_color="#333333",fg_color="#F5EBE0")
+    lbl_Lanzamiento.grid(row=1, column=2, sticky="nsew",padx=5, pady=5)
+
     fila = 2
     for i in controller.libros:
         if i['autor']==autor:

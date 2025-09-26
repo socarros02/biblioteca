@@ -9,8 +9,6 @@ ctk.set_default_color_theme("blue")
 
 def mostrar_prestar_libro(frame,libro,controller,self):
 
-    posicion_fila = 2
-
     ejemplares = db.get_ejemplares_especificos(libro['codigo'])
 
     print("Ejemplares especificos: ",ejemplares)

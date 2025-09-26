@@ -2,24 +2,34 @@ import customtkinter as ctk
 from carpeta_libros import libros as lib
 from estanterias import interfaz_estanteria as iu_estanteria
 from estanterias import mostrar_estanteria as m_estanteria
-import base_datos as db
 from estanterias import nueva_estanteria as n_estanteria
+from estanterias import editar_estanteria as e_estanteria
+from data_base import data_base as db
 import carpeta_libros.mostrar_libro as p_libro
 import carpeta_libros.libros_x_autor as a_libro
+import os
+from PIL import Image, ImageTk
+theme_path = os.path.join(os.path.dirname(__file__), "themes", "coffee.json")
+
+imagen = Image.open("C:/Users/Amadeo/PycharmProjects/biblioteca/themes/biblioteca.jpg")
+imagen = imagen.resize((200, 500))
+
+
 
 class App(ctk.CTk):
+
     def __init__(self):
         super().__init__()
-        self.biblioteca = db.biblioteca
-        self.libros = db.libros
-        self.estanteria_actual = db.biblioteca[0]['estanteria']
-        self.libro_seleccionado = db.libros[0]
-        self.autor_seleccionado = db.libros[0]['autor']
+        self.biblioteca = db.get_estanterias()
+        self.libros = db.get_libros()
+        self.estanteria_actual = None
+        self.libro_seleccionado =None
+        self.autor_seleccionado =None
 
-        self.geometry("700x700")
+        self.geometry("700x500")
         self.title("Biblioteca")
-        ctk.set_appearance_mode("dark")
-        ctk.set_default_color_theme("blue")
+        ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme(theme_path)
 
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -32,7 +42,14 @@ class App(ctk.CTk):
 
         self.frames = {}
 
-        frames = [VentanaPrincipal, VentanaEstanterias, VentanaLibros,VentanaMostrarEstanteria,VentanaCrearEstanteria,VentanaMostrarPrestarLibros,VentanaLibrosAutor]
+        frames = [VentanaPrincipal,
+                  VentanaEstanterias,
+                  VentanaLibros,
+                  VentanaMostrarEstanteria,
+                  VentanaCrearEstanteria,
+                  VentanaMostrarPrestarLibros,
+                  VentanaLibrosAutor,
+                  VentanaEditarEstanteria]
 
         for F in (frames):
             frame = F(self.container, self)
@@ -52,7 +69,13 @@ class App(ctk.CTk):
             frame.actualizarEstanteria()
         elif nombre == "VentanaLibrosAutor":
             frame.actualizarAutor()
+        elif nombre == "VentanaLibros":
+            frame.actualizarLibro()
         frame.tkraise()
+
+    def borrar_widget(self,nombre):
+        for widget in nombre.winfo_children():
+            widget.destroy()
 
 
 class VentanaPrincipal(ctk.CTkFrame):
@@ -61,19 +84,24 @@ class VentanaPrincipal(ctk.CTkFrame):
 
         content = ctk.CTkFrame(self)
         content.pack(expand=True,fill="both")
+        ctk_imagen = ctk.CTkImage(light_image=imagen, dark_image=imagen, size=(300, 500))
+        lbl_imagen = ctk.CTkLabel(content, image=ctk_imagen)
+        lbl_imagen.pack(side="left")
 
-
-        titulo = ctk.CTkLabel(content, text="Biblioteca", font=("Arial", 28, "bold"))
+        titulo = ctk.CTkLabel(content, text="Biblioteca 🏫", font=("Arial", 45, "bold"))
         titulo.pack(pady=20)
 
-        boton_estanterias = ctk.CTkButton(content, text="Estanterías",command=lambda: controller.mostrar_frame("VentanaEstanterias"))
-        boton_estanterias.pack(pady=10)
+        boton_estanterias = ctk.CTkButton(
+            content, text="Estanterías 🗄️",font=("Arial", 25, "bold"),
+            command=lambda: controller.mostrar_frame("VentanaEstanterias"),width=250
+        )
+        boton_estanterias.pack(pady=10,padx=10)
 
         boton_libros = ctk.CTkButton(
-            content, text="Libros",
-            command=lambda: controller.mostrar_frame("VentanaLibros")
+            content, text="Libros 📚",font=("Arial", 25, "bold"),
+            command=lambda: controller.mostrar_frame("VentanaLibros"),width=250
         )
-        boton_libros.pack(pady=10)
+        boton_libros.pack(pady=10,padx=10)
 
 
 class VentanaEstanterias(ctk.CTkFrame):
@@ -103,7 +131,6 @@ class VentanaMostrarEstanteria(ctk.CTkFrame):
         self.frame_estanteria = ctk.CTkFrame(self)
         self.frame_estanteria.pack(fill="both", expand=True, padx=10, pady=10)
 
-
         boton_volver = ctk.CTkButton(
             self, text="Volver",
             command=lambda: controller.mostrar_frame("VentanaPrincipal")
@@ -132,6 +159,22 @@ class VentanaCrearEstanteria(ctk.CTkFrame):
         boton_volver.pack(pady=10)
         n_estanteria.crear_estanteria(frame_crear_estanteria,controller)
 
+class VentanaEditarEstanteria(ctk.CTkFrame):
+    def __init__(self, parent, controller):
+        super().__init__(parent)
+
+        self.controller = controller
+
+        frame_editar_estanteria = ctk.CTkFrame(self)
+        frame_editar_estanteria.pack(fill="both", expand=True, padx=10, pady=10)
+
+        boton_volver = ctk.CTkButton(
+            self, text="Volver",
+            command=lambda: controller.mostrar_frame("VentanaPrincipal")
+        )
+        boton_volver.pack(pady=10)
+        e_estanteria.editar_estanteria(frame_editar_estanteria,controller)
+
 
 
 class VentanaLibros(ctk.CTkFrame):
@@ -139,29 +182,32 @@ class VentanaLibros(ctk.CTkFrame):
         super().__init__(parent)
 
         self.rowconfigure(0, weight=1)
-        self.rowconfigure(1, weight=0)
-        self.rowconfigure(2, weight=0)
+        self.rowconfigure(1, weight=2)
+        self.rowconfigure(2, weight=1)
         self.columnconfigure(0, weight=1)
 
+        self.controller = controller
 
-        frame_libros = ctk.CTkFrame(self)
-        frame_libros.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
+        lbl_header = ctk.CTkLabel(self, text="Libros 📚", font=("Arial", 28, "bold"))
+        lbl_header.grid(row=0, column=0, sticky="ew",padx=5, pady=5)
 
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        self.frame_libros = ctk.CTkFrame(self)
+        self.frame_libros.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
 
+        self.frame_libros.rowconfigure(0, weight=1)
+        self.frame_libros.columnconfigure(0, weight=1)
 
-        frame_libros.rowconfigure(0, weight=1)
-        frame_libros.columnconfigure(0, weight=1)
-
-
-        lib.mostrar_libros(frame_libros,controller)
 
         boton_volver = ctk.CTkButton(
             self, text="Volver",
-            command=lambda: controller.mostrar_frame("VentanaPrincipal")
+            command=lambda: controller.mostrar_frame("VentanaPrincipal"),
+            width=100
         )
-        boton_volver.grid(row=2, column=0, pady=10, sticky="ew",columnspan=3)
+        boton_volver.grid(row=2, column=0, pady=10,columnspan=3)
+
+    def actualizarLibro(self):
+        self.controller.borrar_widget(self.frame_libros)
+        lib.mostrar_libros(self.frame_libros,self.controller)
 
 class VentanaMostrarPrestarLibros(ctk.CTkFrame):
     def __init__(self, parent, controller):

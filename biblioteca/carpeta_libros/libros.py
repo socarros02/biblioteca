@@ -5,85 +5,7 @@ import customtkinter as ctk
 
 libro = 0
 
-def posicion_estanteria(estanterias, codigo):
-    valor = -1
-    for idx, datos in enumerate(estanterias):
-        if int(codigo) == datos['codigo']:
-            valor = idx
-    return valor
-
 def mostrar_libros(frame,controller):
-
-    controller.libros=db.get_libros()
-
-
-    contenedor = ctk.CTkFrame(frame, corner_radius=15,fg_color="transparent")
-    contenedor.grid(row=0, column=0, sticky="nsew", padx=20, pady=20)
-    contenedor.columnconfigure(0, weight=1)
-    for i in range(5):
-        contenedor.rowconfigure(i, weight=1)
-
-    controles = ctk.CTkFrame(frame)
-    controles.grid(row=1, column=0, sticky="nsew", padx=20, pady=20)
-    controles.columnconfigure(0, weight=1)
-    controles.columnconfigure(1, weight=1)
-    controles.columnconfigure(2, weight=1)
-
-
-    busqueda_y_carga = ctk.CTkFrame(frame)
-    busqueda_y_carga.grid(row=2, column=0, sticky="nsew", padx=20, pady=20)
-    busqueda_y_carga.columnconfigure(1, weight=1)
-    busqueda_y_carga.columnconfigure(2, weight=1)
-    busqueda_y_carga.columnconfigure(2, weight=1)
-
-
-    def mostrar_siguiente():
-        global libro
-        posicion=0
-        for widget in contenedor.winfo_children():
-            widget.destroy()
-
-        while posicion!=5 and libro<len(controller.libros):
-            libro_actual = controller.libros[libro]
-            lbl_libros = ctk.CTkLabel(
-                contenedor,
-                text=f"TITULO: {libro_actual['titulo']}| CODIGO: {libro_actual['codigo']}| AUTOR: {libro_actual['autor']}",
-                fg_color="lightblue",
-                text_color="black",
-                corner_radius=8,
-                padx=10,
-                pady=5
-            )
-            lbl_libros.grid(row=posicion, column=0,columnspan=3, padx=5, pady=5, sticky="nsew")
-            libro+=1
-            posicion+=1
-
-        btn_siguiente = ctk.CTkButton(
-            controles,
-            text="siguiente",
-            fg_color="white",
-            text_color="black",
-            corner_radius=8,
-            command=mostrar_siguiente
-        )
-        btn_siguiente.grid(row=0, column=2, padx=5, pady=5,sticky="nsew")
-        if libro > len(controller.libros) - 1:
-            for widget in controles.winfo_children():
-                widget.destroy()
-        if libro > 5:
-            btn_anterior = ctk.CTkButton(
-                controles,
-                text="anterior",
-                fg_color="white",
-                text_color="black",
-                corner_radius=8,
-                command=mostrar_anterior
-            )
-            btn_anterior.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
-
-
-    mostrar_siguiente()
-
 
     def mostrar_anterior():
         global libro
@@ -96,9 +18,80 @@ def mostrar_libros(frame,controller):
         else:
             libro-=10
         if libro<5:
-            for widget in controles.winfo_children():
-                widget.destroy()
+            controller.borrar_widget(controles)
         mostrar_siguiente()
+
+    controller.libros=db.get_libros()
+
+    frame.rowconfigure(0, weight=1)
+    frame.rowconfigure(1, weight=2)
+    frame.rowconfigure(2, weight=1)
+
+    contenedor = ctk.CTkFrame(frame,fg_color="transparent")
+    contenedor.grid(row=1, column=0, sticky="nsew", padx=10, pady=10)
+    contenedor.columnconfigure(0, weight=1)
+    for i in range(5):
+        contenedor.rowconfigure(i, weight=1)
+
+    controles = ctk.CTkFrame(frame,fg_color="transparent")
+    controles.grid(row=2, column=0, sticky="nsew", padx=2, pady=2)
+    controles.columnconfigure(0, weight=1)
+    controles.columnconfigure(1, weight=1)
+    controles.columnconfigure(2, weight=1)
+
+
+    busqueda_y_carga = ctk.CTkFrame(frame,fg_color="transparent")
+    busqueda_y_carga.grid(row=0, column=0, sticky="nsew", padx=2, pady=2)
+    busqueda_y_carga.columnconfigure(1, weight=1)
+    busqueda_y_carga.columnconfigure(2, weight=1)
+    busqueda_y_carga.columnconfigure(2, weight=1)
+
+
+    def mostrar_siguiente():
+        global libro
+        posicion=0
+        controller.borrar_widget(contenedor)
+
+
+        while posicion!=5 and libro<len(controller.libros):
+            libro_actual = controller.libros[libro]
+            lbl_libros = ctk.CTkLabel(
+                contenedor,
+                text=f"📖 TITULO: {libro_actual['titulo']}\t\t| CODIGO: {libro_actual['codigo']}\t| AUTOR: {libro_actual['autor']}",
+                text_color="#333333",
+                fg_color="#F5EBE0",
+                corner_radius=8,
+                padx=10,
+                pady=5
+            )
+            lbl_libros.grid(row=posicion, column=0,columnspan=3, padx=5, pady=5, sticky="nsew")
+            libro+=1
+            posicion+=1
+
+        btn_siguiente = ctk.CTkButton(
+            controles,
+            text="siguiente",
+            corner_radius=8,
+            command=mostrar_siguiente
+        )
+        btn_siguiente.grid(row=0, column=2, padx=5, pady=5,sticky="nsew")
+        if libro > len(controller.libros) - 1:
+            controller.borrar_widget(controles)
+            libro = libro-posicion
+        if libro > 5:
+            btn_anterior = ctk.CTkButton(
+                controles,
+                text="anterior",
+                corner_radius=8,
+                command=mostrar_anterior
+            )
+            btn_anterior.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+
+    mostrar_siguiente()
+
+
+
 
     def buscar_titulo():
         titulo = txt_buscar_titulo.get()
@@ -121,21 +114,24 @@ def mostrar_libros(frame,controller):
     def buscar_autor():
         autor = txt_buscar_autor.get()
         libros_autor = db.get_libros_por_autor(autor)
-        print(libros_autor)
         if libros_autor:
-            controller.autor_seleccionado = autor
+            controller.autor_seleccionado = libros_autor
             controller.mostrar_frame("VentanaLibrosAutor")
+
         else:
             print("No existe ese autor")
 
+    controller.borrar_widget(busqueda_y_carga)
+
     txt_buscar_titulo = ctk.CTkEntry(busqueda_y_carga, placeholder_text="buscar libro por titulo...")
-    txt_buscar_titulo.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    txt_buscar_titulo.grid(row=1, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
+
 
     txt_buscar_codigo = ctk.CTkEntry(busqueda_y_carga, placeholder_text="buscar libro por codigo...")
-    txt_buscar_codigo.grid(row=2, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    txt_buscar_codigo.grid(row=2, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
 
     txt_buscar_autor = ctk.CTkEntry(busqueda_y_carga, placeholder_text="buscar libro por autor...")
-    txt_buscar_autor.grid(row=3, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
+    txt_buscar_autor.grid(row=3, column=0, columnspan=3, padx=5, pady=5, sticky="ew")
 
     btn_buscar_titulo = ctk.CTkButton(busqueda_y_carga, text="buscar", command=buscar_titulo)
     btn_buscar_titulo.grid(row=1, column=3, padx=5, pady=5, sticky="ew")

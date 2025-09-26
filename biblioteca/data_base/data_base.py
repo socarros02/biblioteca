@@ -64,8 +64,8 @@ def get_libros_por_autor(nombre_autor):
     cursor.execute("""
         SELECT autor
         FROM libros
-        WHERE autor = ?
-    """, (nombre_autor,))
+        WHERE autor like ?
+    """, (f"{nombre_autor}%",))
     row = cursor.fetchone()
     conn.close()
     return row[0] if row else None
@@ -73,11 +73,11 @@ def get_libros_por_autor(nombre_autor):
 def get_estanterias():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, nombre FROM estanterias")
+    cursor.execute("SELECT id, nombre,capacidad_maxima FROM estanterias")
     rows = cursor.fetchall()
     conn.close()
     # devolver como lista de diccionarios, igual que antes
-    return [{"codigo": r[0], "nombre": r[1]} for r in rows]
+    return [{"codigo": r[0], "nombre": r[1], "capacidad":r[2]} for r in rows]
 
 def get_estanteria_seleccionada(codigo):
     conn = get_connection()
@@ -160,4 +160,25 @@ def get_ejemplar_por_estanteria(estanteria,isbn):
     return [cantidad]
 
 
+def contar_ejemplares_por_estanteria(id_estanteria):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM ejemplares
+        WHERE id_estanteria = ?
+    """, (id_estanteria,))
+    cantidad = cursor.fetchone()
+    conn.close()
+    return cantidad[0] if cantidad else 0
+def editar_estaneria(id_estanteria,nombre,capacidad):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        update estanterias
+        set nombre = ?,capacidad_maxima = ?
+        where id = ?
+    """, (nombre,capacidad,id_estanteria,))
+    conn.commit()
+    conn.close()
 

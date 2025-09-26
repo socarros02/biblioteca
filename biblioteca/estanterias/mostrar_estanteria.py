@@ -42,18 +42,17 @@ def abrir_mostrar_estanteria(frame,estanteria,controller,self):
         controles.columnconfigure(3, weight=1)
 
 
-    busqueda = ctk.CTkFrame(frame, corner_radius=15)
-    busqueda.grid(row=2, column=0, sticky="nsew", padx=5, pady=20)
-    busqueda.rowconfigure(2, weight=1)
-    busqueda.columnconfigure(0, weight=3)
-    busqueda.columnconfigure(1, weight=1)
+    busqueda = ctk.CTkFrame(frame,bg_color="transparent")
+    busqueda.grid(row=2, column=0,pady=15)
+    busqueda.columnconfigure(0, weight=1)
+
 
 
     def prestar():
         abrir_mostrar_estanteria(frame, estanteria, controller, self)
 
-    btn_prestar_libro = ctk.CTkButton(busqueda, text="Prestar", command=lambda: prestar())
-    btn_prestar_libro.grid(row=1, column=1, padx=5, pady=5,sticky="nsew")
+    btn_prestar_libro = ctk.CTkButton(busqueda, text="Prestar Libro", command=lambda: prestar(),width=150)
+    btn_prestar_libro.grid(row=1, column=0)
 
 
     def mostrar_siguiente():
@@ -71,8 +70,8 @@ def abrir_mostrar_estanteria(frame,estanteria,controller,self):
                 contenedor,
                 text=f"{libro_actual['titulo']} - ejemplar:{libro_actual['ejemplar']}",
                 corner_radius=10,
-                fg_color="lightblue",
-                text_color="black",
+                text_color="#333333",
+                fg_color="#F5EBE0",
                 anchor="center"
             )
             lbl_libro.grid(row=posicion, column=0, padx=5, pady=5, sticky="nsew")
@@ -84,8 +83,6 @@ def abrir_mostrar_estanteria(frame,estanteria,controller,self):
             btn_siguiente = ctk.CTkButton(
                 controles,
                 text="siguiente",
-                fg_color="white",
-                text_color="black",
                 corner_radius=8,
                 command=mostrar_siguiente
             )
@@ -97,8 +94,6 @@ def abrir_mostrar_estanteria(frame,estanteria,controller,self):
                 btn_anterior = ctk.CTkButton(
                     controles,
                     text="anterior",
-                    fg_color="white",
-                    text_color="black",
                     corner_radius=8,
                     command=mostrar_anterior
                 )
