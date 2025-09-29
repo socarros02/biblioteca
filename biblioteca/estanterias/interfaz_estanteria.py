@@ -19,9 +19,9 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
     global est
     est=0
     lista_frame = ctk.CTkFrame(frame, fg_color="transparent")
-    lista_frame.pack(fill="both", expand=True, pady=5)
+    lista_frame.pack(fill="both", expand=True, pady=10)
     controles = ctk.CTkFrame(frame, fg_color="transparent")
-    controles.pack(fill="both", expand=True, pady=5)
+    controles.pack(fill="both", expand=True, pady=10)
 
     def mostrar_anterior():
         global est
@@ -43,7 +43,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
 
         controller.borrar_widget(lista_frame)
 
-        while posicion!=4 and est<len(biblioteca):
+        while posicion!=5 and est<len(biblioteca):
 
             fila_frame = ctk.CTkFrame(lista_frame, fg_color="transparent",corner_radius=5)
             fila_frame.pack(fill="x", pady=2)
@@ -51,7 +51,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
             disponible =estanteria_actual['capacidad']- db.contar_ejemplares_por_estanteria(estanteria_actual["codigo"])
             label = ctk.CTkLabel(
                 fila_frame,
-                text=f"🗄️{estanteria_actual['nombre']}   -   código {estanteria_actual['codigo']}  -   capacidad {estanteria_actual['capacidad']}  -  disponibilidad {disponible}",
+                text=f"🗄️{estanteria_actual['nombre']}   -   código {estanteria_actual['codigo']}  -   capacidad {estanteria_actual['capacidad']}  -  espacios disponibles {disponible}",
                 text_color="#333333",
                 fg_color="#F5EBE0",
                 corner_radius=8,
@@ -111,8 +111,7 @@ def abrir_estanteria(frame,controller):
     lbl_header = ctk.CTkLabel(header, text= "Estanterias",corner_radius=15,font=("Arial",30))
     lbl_header.pack(padx=5, pady=5,expand=True)
 
-    manejo_estanteria_frame = ctk.CTkFrame(frame,fg_color="transparent")
-    manejo_estanteria_frame.pack(fill="x", pady=10,expand=True)
+
 
     mostrar_estanterias_disponibles(biblioteca, contenedor,controller)
 
@@ -134,11 +133,5 @@ def abrir_estanteria(frame,controller):
 
 
 
-    boton_nueva_estanteria = ctk.CTkButton(manejo_estanteria_frame,text="Crear nueva estanteria",command=lambda: controller.mostrar_frame("VentanaCrearEstanteria"))
-    boton_nueva_estanteria.pack(side="left",padx=5,pady=5,fill="x",expand=True)
 
-    boton_editar_estanteria = ctk.CTkButton(manejo_estanteria_frame, text="Editar estanteria",command=lambda: controller.mostrar_frame("VentanaEditarEstanteria"))
-    boton_editar_estanteria.pack(side="left",padx=5,pady=5,fill="x",expand=True)
-    boton_borrar_estanteria = ctk.CTkButton(manejo_estanteria_frame, text="Borrar estanteria",command=lambda: controller.mostrar_frame("VentanaCrearEstanteria"))
-    boton_borrar_estanteria.pack(side="left",padx=5,pady=5,fill="x",expand=True)
 

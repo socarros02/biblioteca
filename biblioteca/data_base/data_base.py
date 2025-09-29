@@ -1,6 +1,8 @@
 import sqlite3 as sql
 import os
 
+from carpeta_libros.libros_nuevo_ejemplar import cantidad_ejemplares
+
 DB_NAME = os.path.join(os.path.dirname(__file__), "database.db")
 
 
@@ -95,26 +97,27 @@ def get_estanteria_completa(codigo_estanteria):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT e.id_ejemplar,l.titulo
+    SELECT l.titulo,
+           count(e.id_ejemplar) as cantidad
     FROM ejemplares e
     JOIN libros l ON e.id_libro = l.isbn
-    where e.id_estanteria = ?;
+    where e.id_estanteria = ? and e.disponible = 1
+    group by l.titulo;
     """, (codigo_estanteria,))
     rows = cursor.fetchall()
     conn.close()
     return [
-        {"ejemplar": r[0],"titulo": r[1]}
+        {"titulo": r[0],"cantidad":r[1]}
         for r in rows
     ]
 
-def prestar_libro(ejemplar):
+def prestar_libro(ejemplar,nombre):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        UPDATE ejemplares
-        SET disponible = 0,id_estanteria = null
-        WHERE id_ejemplar = ?
-    """, (ejemplar,))
+       insert into prestamos(devolucion,id_ejemplar,nombre)
+       values (0,?,?)    
+        """, (ejemplar,nombre))
     conn.commit()
     conn.close()
 
@@ -135,17 +138,18 @@ def get_ejemplares_especificos(isbn):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-    SELECT ej.id_ejemplar,es.nombre,ej.disponible
-    from ejemplares ej
-    join estanterias es on es.id = ej.id_estanteria
-    where id_libro = ?
-        """, (isbn,))
-    rows = cursor.fetchall()
+        SELECT id_estanteria, COUNT(*)
+        FROM ejemplares 
+        WHERE id_libro = ? and disponible = 1
+        GROUP BY id_estanteria
+    """, (isbn,))
+    row = cursor.fetchall()
     conn.close()
+
     return [
-        {"ejemplar": r[0], "estanteria": r[1],"disponible":r[2]}
-        for r in rows
-    ]
+        {"estanteria": r[0], "cantidad": r[1]}
+        for r in row
+    ] if row else None
 
 def get_ejemplar_por_estanteria(estanteria,isbn):
     conn = get_connection()
@@ -159,6 +163,20 @@ def get_ejemplar_por_estanteria(estanteria,isbn):
     conn.close()
     return [cantidad]
 
+def get_id_ejemplar(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT id_ejemplar
+    FROM ejemplares
+    where id_libro = ? and disponible = 1
+    LIMIT 1
+        """, (isbn,))
+    row = cursor.fetchone()
+    conn.close()
+    return row[0] if row else None
+
+
 
 def contar_ejemplares_por_estanteria(id_estanteria):
     conn = get_connection()
@@ -171,6 +189,8 @@ def contar_ejemplares_por_estanteria(id_estanteria):
     cantidad = cursor.fetchone()
     conn.close()
     return cantidad[0] if cantidad else 0
+
+
 def editar_estaneria(id_estanteria,nombre,capacidad):
     conn = get_connection()
     cursor = conn.cursor()
@@ -181,4 +201,130 @@ def editar_estaneria(id_estanteria,nombre,capacidad):
     """, (nombre,capacidad,id_estanteria,))
     conn.commit()
     conn.close()
+
+def get_ubicacion_ejemplar(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    select id_estanteria
+    from ejemplares
+    where id_libro = ?
+    """, (isbn,))
+    estanteria = cursor.fetchone()
+    conn.close()
+    id_estanteria = estanteria[0] if estanteria else None
+    return id_estanteria
+
+def carga_nuevo_ejemplar(id_estanteria,isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    insert into ejemplares
+        (id_estanteria,id_libro,disponible)
+        values (?,?,1)
+        """, (id_estanteria,isbn,))
+    conn.commit()
+    conn.close()
+def nuevo_libro(isbn,titulo,autor,publicaion,edicion):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    insert into libros
+        (isbn,titulo,autor,fecha_publicacion,edicion)
+        values (?,?,?,?,?)
+        """, (isbn,titulo,autor,publicaion,edicion,))
+    conn.commit()
+    conn.close()
+
+def editar_libro(isbn_nuevo,titulo,autor,publicaion,edicion,isbn_viejo):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    update libros
+    set isbn = ?, titulo = ?, autor = ?, fecha_publicacion = ?,edicion = ?
+    where isbn = ?
+    """,(isbn_nuevo,titulo,autor,publicaion,edicion,isbn_viejo))
+    conn.commit()
+    conn.close()
+
+def get_prestamos():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    select p.id_prestamo, p.id_ejemplar, l.titulo, p.nombre
+    from prestamos p
+    join ejemplares e on e.id_ejemplar = p.id_ejemplar
+    join libros l on l.isbn = e.id_libro
+    where devolucion = 0
+    """)
+    prestamos = cursor.fetchall()
+    conn.close()
+    return [
+        {"prestamo": r[0], "ejemplar": r[1],"titulo": r[2],"persona": r[3]}
+        for r in prestamos
+    ] if prestamos else None
+
+def devolver_prestamos(prestamos):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    update prestamos
+    set devolucion = 1
+    where id_prestamo = ?
+        """, (prestamos,))
+    conn.commit()
+
+def mas_prestados():
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT l.titulo, COUNT(p.id_prestamo) AS cantidad_prestamos
+        FROM prestamos p
+        JOIN ejemplares e ON e.id_ejemplar = p.id_ejemplar
+        JOIN libros l ON l.isbn = e.id_libro
+        GROUP BY l.isbn, l.titulo
+        ORDER BY cantidad_prestamos DESC
+    """)
+    resultados = cursor.fetchall()
+    conn.close()
+    return resultados[:5]
+
+def cantidad_ejemplares_por_libro(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT COUNT(*) AS canitdad
+    FROM ejemplares
+    WHERE id_libro = ?;
+        """, (isbn,))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado[0]
+
+def capacidad_maxima(estanteria):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    select capacidad_maxima
+    from estanterias
+    where id = ?
+        """, (estanteria,))
+    resultado = cursor.fetchone()
+    conn.close()
+    return resultado[0]
+
+
+def cambiar_de_estanteria(estanteria,isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    update ejemplares
+    set id_estanteria = ?
+    where id_libro = ?
+    """, (estanteria,isbn))
+    conn.commit()
+    conn.close()
+
+
+
 
