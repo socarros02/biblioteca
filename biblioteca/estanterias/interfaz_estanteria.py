@@ -19,9 +19,9 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
     global est
     est=0
     lista_frame = ctk.CTkFrame(frame, fg_color="transparent")
-    lista_frame.pack(fill="both", expand=True, pady=10)
+    lista_frame.pack(fill="both", expand=True, pady=5)
     controles = ctk.CTkFrame(frame, fg_color="transparent")
-    controles.pack(fill="both", expand=True, pady=10)
+    controles.pack(fill="both", expand=True, pady=5)
 
     def mostrar_anterior():
         global est
@@ -69,7 +69,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
             command=mostrar_siguiente,
             width=50
         )
-        btn_siguiente.pack(side="right", padx=100, pady=5)
+        btn_siguiente.pack(side="right", padx=100)
         if est> len(biblioteca) - 1:
             controller.borrar_widget(controles)
 
@@ -81,7 +81,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
                 command=mostrar_anterior,
                 width=50
             )
-            btn_anterior.pack(side="left", padx=100, pady=5)
+            btn_anterior.pack(side="left", padx=100)
 
 
     mostrar_siguiente()

@@ -58,7 +58,7 @@ def mostrar_libros(frame,controller):
             libro_actual = controller.libros[libro]
             lbl_libros = ctk.CTkLabel(
                 contenedor,
-                text=f"📖 TITULO: {libro_actual['titulo']}\t\t| CODIGO: {libro_actual['codigo']}\t| AUTOR: {libro_actual['autor']}",
+                text=f"📖 TITULO: {libro_actual['titulo']}  | CODIGO: {libro_actual['codigo']}  | AUTOR: {libro_actual['autor']}",
                 text_color="#333333",
                 fg_color="#F5EBE0",
                 corner_radius=8,

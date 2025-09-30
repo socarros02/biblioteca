@@ -10,7 +10,7 @@ class VentanaPrincipal(ctk.CTkFrame):
         content = ctk.CTkFrame(self)
         content.pack(expand=True,fill="both")
         ctk_imagen = ctk.CTkImage(light_image=imagen, dark_image=imagen, size=(300, 500))
-        lbl_imagen = ctk.CTkLabel(content, image=ctk_imagen)
+        lbl_imagen = ctk.CTkLabel(content, image=ctk_imagen,text="")
         lbl_imagen.pack(side="left")
 
         titulo = ctk.CTkLabel(content, text="Biblioteca 🏫", font=("Arial", 45, "bold"))

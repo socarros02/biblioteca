@@ -7,20 +7,25 @@ ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
 ctk.set_default_color_theme("blue")  # opciones: "blue", "green", "dark-blue"
 
 
-
-
+def encontrar_estanteria(id):
+    estanteria=db.get_estanterias()
+    for estanteria in estanteria:
+        if estanteria["codigo"] == id:
+            return estanteria
 
 
 def abrir_mostrar_estanteria(frame,estanteria,controller):
     controller.borrar_widget(frame)
-
+    estan=encontrar_estanteria(estanteria)
     global libro
     libro = 0
     libros = db.get_estanteria_completa(estanteria)
-
+    frame_titulo = ctk.CTkFrame(frame)
+    frame_titulo.pack(fill="x", expand=True, padx=5, pady=5)
     contenedor = ctk.CTkFrame(frame, corner_radius=15)
     contenedor.pack(fill="x", expand=True, padx=5, pady=5)
-
+    lbl_header = ctk.CTkLabel(frame_titulo,text=f"Estanteria {estan['nombre']},codigo {estan['codigo']}",font=("Arial", 15, "bold"))
+    lbl_header.pack(pady=5, expand=True, fill="x")
     if len(libros)>5:
         controles= ctk.CTkFrame(frame, corner_radius=15)
         controles.pack(fill="x", expand=True, padx=5, pady=5)
@@ -113,7 +118,7 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
         db.prestar_libro(ejemplar, nombre)
         controller.mostrar_frame("VentanaPrincipal")
 
-    btn_prestar = ctk.CTkButton(contenedor_prestamos, corner_radius=15,command=prestar_ejemplar)
+    btn_prestar = ctk.CTkButton(contenedor_prestamos, corner_radius=15,command=prestar_ejemplar,text="Prestar")
     btn_prestar.pack(pady=5, expand=True, fill="x", padx=15)
 
     mostrar_siguiente()

@@ -1,19 +1,27 @@
 import customtkinter as ctk
-
 from data_base import data_base as db
+from estanterias import interfaz_estanteria as iu
+
 
 def elegir_estanteria(frame,libro,controller):
+    estanterias = db.get_estanterias()
     cantidad_ejemplares= db.cantidad_ejemplares_por_libro(libro['codigo'])
-    lbl_isbn_viejo = ctk.CTkLabel(frame,text=f"Libro que esta cambiando de estanteria"
-                                             f"\n{libro['titulo']} - autor {libro['autor']} - codigo {libro['codigo']}\n"
-                                             f"Los ejemplares que debe mover son {cantidad_ejemplares}",font=("Arial", 20, "bold"))
+
+    lbl_isbn_viejo = ctk.CTkLabel(frame, text=f"El libro que quieres mover de estanteria es {libro['titulo']} \n Y tiene {cantidad_ejemplares} ejemplares a mover",font=("Arial", 15, "bold"))
     lbl_isbn_viejo.pack(pady=5, expand=True, fill="x")
+
+    contenedor= ctk.CTkFrame(frame)
+    contenedor.pack(pady=5,expand=True,fill="x",padx=15)
+
+
+
     lbl_error = ctk.CTkLabel(frame, text="", text_color="red")
     lbl_error.pack(fill="x", expand=True, padx=5, pady=5)
 
     caja_texto_ingresar_codigo = ctk.CTkEntry(frame, placeholder_text="Código de estantería...")
-    caja_texto_ingresar_codigo.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+    caja_texto_ingresar_codigo.pack(side="left", fill="x", expand=True, padx=5)
 
+    iu.mostrar_estanterias_disponibles(estanterias,contenedor,controller)
 
     def confirmar_estanteria():
         codigo = caja_texto_ingresar_codigo.get()
@@ -43,7 +51,7 @@ def elegir_estanteria(frame,libro,controller):
             return
 
     boton_ver_estanteria = ctk.CTkButton(frame, text="Elegir", command=confirmar_estanteria)
-    boton_ver_estanteria.pack(side="left", padx=5, pady=5)
+    boton_ver_estanteria.pack(side="left", padx=5)
 
 
 
@@ -52,7 +60,7 @@ def cambiar_estanterias(frame, controller):
     contenedor = ctk.CTkFrame(frame)
     contenedor.pack(fill="both", expand=True, padx=20, pady=20)
 
-    lbl_header = ctk.CTkLabel(contenedor, text="Cambiar ejemplares de estanteria", font=("Arial", 30, "bold"))
+    lbl_header = ctk.CTkLabel(contenedor, text="Cambiar ejemplares de estanteria", font=("Arial",15, "bold"))
     lbl_header.pack(padx=5, pady=5)
 
     busqueda_frame = ctk.CTkFrame(contenedor, fg_color="transparent")
@@ -74,6 +82,7 @@ def cambiar_estanterias(frame, controller):
             return
         else:
             busqueda_frame.destroy()
+            contenedor.destroy()
             elegir_estanteria(frame,libro,controller)
 
 

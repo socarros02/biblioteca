@@ -7,7 +7,7 @@ class VentanaMostrarPrestarLibros(ctk.CTkFrame):
         self.controller = controller
 
 
-        self.frame_libros = ctk.CTkFrame(self)
+        self.frame_libros = ctk.CTkFrame(self,fg_color="#F5EBE0")
         self.frame_libros.pack(pady=5,expand=True,fill="x",padx=15)
 
 

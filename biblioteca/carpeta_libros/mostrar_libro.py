@@ -12,7 +12,6 @@ def mostrar_prestar_libro(frame,libro,controller,self):
 
     ejemplares = db.get_ejemplares_especificos(libro['codigo'])
 
-    print(ejemplares)
     cantidad =0
     estanteria = "Todos los ejemplares estan prestados"
     if ejemplares != None:
@@ -20,7 +19,7 @@ def mostrar_prestar_libro(frame,libro,controller,self):
         estanteria = ejemplares[0]['estanteria']
 
 
-    contenedor = ctk.CTkFrame(frame, corner_radius=15,fg_color="#F5EBE0")
+    contenedor = ctk.CTkFrame(frame, corner_radius=15,fg_color="transparent")
     contenedor.pack(pady=5,expand=True,fill="x",padx=15)
 
 
