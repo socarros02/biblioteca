@@ -92,4 +92,3 @@ source venv/bin/activate
 ```bash
 - python main.py
 ```
-a
