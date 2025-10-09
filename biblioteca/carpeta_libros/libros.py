@@ -5,6 +5,9 @@ import customtkinter as ctk
 
 libro = 0
 
+
+
+
 def mostrar_libros(frame,controller):
     global libro
     libro = 0

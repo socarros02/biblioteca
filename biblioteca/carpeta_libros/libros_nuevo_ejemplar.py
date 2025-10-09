@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from data_base import data_base as db
+from CTkMessagebox import CTkMessagebox
 
 
 def encontrar_estanteria(id_estanteria,biblioteca):
@@ -98,8 +99,14 @@ def cantidad_ejemplares(isbn,capacidad,frame,estanteria,controller):
         except ValueError:
             lbl_error.configure(text="Ingrese datos validos")
             return
+
+        CTkMessagebox(title="Éxito",
+                      message=f"Ejemplares agregados con exito",
+                      icon="check",
+                      master=controller)
         for i in range(cantidad):
             db.carga_nuevo_ejemplar(estanteria,isbn)
+
         controller.mostrar_frame("VentanaPrincipal")
 
 

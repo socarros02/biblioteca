@@ -1,7 +1,7 @@
 import tkinter as tk
 import customtkinter as ctk
 
-from carpeta_libros.libros_nuevo_ejemplar import cantidad_ejemplares
+from CTkMessagebox import CTkMessagebox
 from data_base import data_base as db
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
 ctk.set_default_color_theme("blue")
@@ -57,8 +57,20 @@ def mostrar_prestar_libro(frame,libro,controller,self):
             if not nombre:
                 lbl_error.configure(text="Ingrese datos validos")
                 return
-            db.prestar_libro(ejemplar,nombre)
-            controller.mostrar_frame("VentanaPrincipal")
+            msg = CTkMessagebox(title="Confirmar préstamo",
+                                message=f"Confirmar prestamo de libro {libro['titulo']}, a {nombre} ",
+                                icon="question",
+                                option_1="Sí",
+                                option_2="No",
+                                master=controller)
+
+            if msg.get() == "Sí":
+                CTkMessagebox(title="Éxito",
+                              message=f"Libro '{libro['titulo']}' prestado con éxito.",
+                              icon="check",
+                              master=controller)
+                db.prestar_libro(ejemplar,nombre)
+                controller.mostrar_frame("VentanaPrincipal")
 
 
 

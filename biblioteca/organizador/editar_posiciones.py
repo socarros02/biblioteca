@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from data_base import data_base as db
 from estanterias import interfaz_estanteria as iu
+from CTkMessagebox import CTkMessagebox
 
 
 def elegir_estanteria(frame,libro,controller):
@@ -42,6 +43,10 @@ def elegir_estanteria(frame,libro,controller):
             capacidad = db.capacidad_maxima(estanteria)
             ocupado = db.contar_ejemplares_por_estanteria(estanteria)
             if capacidad-cantidad_ejemplares-ocupado>=0:
+                CTkMessagebox(title="Éxito",
+                              message=f"Los ejemplares de {libro['titulo']}, se cambiaron a la estanteria codigo {estanteria}, con exito",
+                              icon="check",
+                              master=controller)
                 db.cambiar_de_estanteria(estanteria,libro['codigo'])
                 controller.mostrar_frame("VentanaPrincipal")
             else:

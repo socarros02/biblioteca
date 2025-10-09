@@ -1,6 +1,7 @@
 
 import customtkinter as ctk
 from data_base import data_base as db
+from CTkMessagebox import CTkMessagebox
 libro = 0
 # Configuración inicial de apariencia
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
@@ -115,8 +116,20 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
             lbl_error.configure(text="Estanteria no encontrada")
             return
         ejemplar = db.get_id_ejemplar(existe['codigo'])
-        db.prestar_libro(ejemplar, nombre)
-        controller.mostrar_frame("VentanaPrincipal")
+        msg = CTkMessagebox(title="Confirmar préstamo",
+                            message=f"¿Deseas prestar '{titulo}' a {nombre}?",
+                            icon="question",
+                            option_1="Sí",
+                            option_2="No",
+                            master=controller)
+
+        if msg.get() == "Sí":
+            CTkMessagebox(title="Éxito",
+                          message=f"Libro '{titulo}' prestado con éxito.",
+                          icon="check",
+                          master=controller)
+            db.prestar_libro(ejemplar, nombre)
+            controller.mostrar_frame("VentanaPrincipal")
 
     btn_prestar = ctk.CTkButton(contenedor_prestamos, corner_radius=15,command=prestar_ejemplar,text="Prestar")
     btn_prestar.pack(pady=5, expand=True, fill="x", padx=15)

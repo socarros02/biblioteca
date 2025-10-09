@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from customtkinter import *
+from CTkMessagebox import CTkMessagebox
 from data_base import data_base as db
 
 biblioteca = db.get_estanterias()
@@ -33,9 +33,20 @@ def cambiar_valores(codigo,frame_valores,controller):
             lbl_error.configure(text="Ingrese datos validos")
             return
         print(nombre,capacidad)
+        msg = CTkMessagebox(title="Confirmar edicion",
+                            message=f"¿Confirmas que deseas editar esta estanteria? Esta acción no se puede revertir. ",
+                            icon="question",
+                            option_1="Sí",
+                            option_2="No",
+                            master=controller)
 
-        db.editar_estaneria(codigo,nombre,capacidad)
-        controller.mostrar_frame("VentanaPrincipal")
+        if msg.get() == "Sí":
+            CTkMessagebox(title="Éxito",
+                          message=f"Edicion finalizada.",
+                          icon="check",
+                          master=controller)
+            db.editar_estaneria(codigo,nombre,capacidad)
+            controller.mostrar_frame("VentanaPrincipal")
 
     btn_crear_estanteria = ctk.CTkButton(frame_valores, text="editar", command=validar_ingreso, width=200)
     btn_crear_estanteria.pack(side="left",padx=5,pady=5,fill="x",expand=True)

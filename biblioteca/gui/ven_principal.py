@@ -22,9 +22,11 @@ class VentanaPrincipal(ctk.CTkFrame):
                 controller.mostrar_frame("VentanaEditarEstanteria")
             elif choice == "Nueva estanteria":
                 controller.mostrar_frame("VentanaCrearEstanteria")
+            elif choice == "Borrar Estanteria":
+                controller.mostrar_frame("VentanaBorrarEstanteria")
 
         opciones_estanterias=[
-            "Ver Estanterias","Editar Estanterias","Nueva estanteria"
+            "Ver Estanterias","Editar Estanterias","Nueva estanteria","Borrar Estanteria"
         ]
         estanterias = ctk.CTkOptionMenu(content, values=opciones_estanterias, command=mostrar_eleccion_estanteria,width=250)
         estanterias.pack(pady=20)
@@ -38,9 +40,12 @@ class VentanaPrincipal(ctk.CTkFrame):
                 controller.mostrar_frame("VentanaEditarLibros")
             elif choice == "Nuevos Ejemplares":
                 controller.mostrar_frame("VentanaNuevosEjemplares")
+            elif choice == "Borrar Libro":
+                controller.mostrar_frame("VentanaBorrarLibro")
+
 
         opciones_libro=[
-            "Ver Libros","Editar Libros","Nuevos Ejemplares"
+            "Ver Libros","Editar Libros","Nuevos Ejemplares","Borrar Libro"
         ]
         libros = ctk.CTkOptionMenu(content, values=opciones_libro, command=mostrar_eleccion_libros,width=250)
         libros.pack(pady=20)
@@ -65,7 +70,7 @@ class VentanaPrincipal(ctk.CTkFrame):
 
         prestamos.set("Prestamos")
 
-        btn_organizar= ctk.CTkButton(content, text="Organizar", command=lambda: controller.mostrar_frame("VentanaOrganizar"))
+        btn_organizar= ctk.CTkButton(content, text="Cambiar ejemplares de estanteria", command=lambda: controller.mostrar_frame("VentanaOrganizar"))
 
         btn_organizar.pack(pady=20)
 

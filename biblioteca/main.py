@@ -2,7 +2,8 @@ import os
 import customtkinter as ctk
 from PIL import Image
 from data_base import data_base as db
-
+from gui.ven_estanterias_borrar import VentanaBorrarEstanteria
+from gui.ven_libros_borrar import VentanaBorrarLibro
 
 from gui.ven_principal import VentanaPrincipal
 from gui.ven_estanterias import VentanaEstanterias
@@ -63,7 +64,9 @@ class App(ctk.CTk):
                   VentanaPrestarLibro,
                   VentanaDevolverLibro,
                   VentanaMasPrestado,
-                  VentanaOrganizar]
+                  VentanaOrganizar,
+                  VentanaBorrarEstanteria,
+                  VentanaBorrarLibro]
 
         for F in (frames):
             frame = F(self.container, self)
@@ -75,28 +78,10 @@ class App(ctk.CTk):
 
     def mostrar_frame(self, nombre):
         frame = self.frames[nombre]
-        if nombre == "VentanaMostrarEstanteria":
-            frame.actualizarMostrarEstanteria()
-        elif nombre == "VentanaMostrarPrestarLibros":
-            frame.actualizarPrestamo()
-        elif nombre == "VentanaEstanterias":
-            frame.actualizarEstanteria()
-        elif nombre == "VentanaLibrosAutor":
-            frame.actualizarAutor()
-        elif nombre == "VentanaLibros":
-            frame.actualizarLibro()
-        elif nombre == "VentanaNuevosEjemplares":
-            frame.actualizarEjemplares()
-        elif nombre == "VentanaEditarLibros":
-            frame.actualizarEditarLibro()
-        elif nombre == "VentanaPrestarLibro":
-            frame.actualizarPrestarLibro()
-        elif nombre == "VentanaDevolverLibro":
-            frame.actualizarDevolverLibro()
-        elif nombre == "VentanaMasPrestado":
-            frame.actualizarMasPrestado()
-        elif nombre == "VentanaOrganizar":
-            frame.actualizarOrganizar()
+        for atributo in dir(frame):
+            if atributo.startswith("actualizar"):
+                getattr(frame, atributo)()
+                break
         frame.tkraise()
 
     def borrar_widget(self,nombre):

@@ -325,6 +325,63 @@ def cambiar_de_estanteria(estanteria,isbn):
     conn.commit()
     conn.close()
 
+def eliminar_estanteria(estanteria):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    delete from estanterias
+    where id = ?
+    """, (estanteria,))
+    conn.commit()
+    conn.close()
+
+def borrar_libro_ejemplares(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    delete from ejemplares
+    where id_libro = ?
+    """, (isbn,))
+    conn.commit()
+    conn.close()
+
+def borrar_libro(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+    delete from libros
+    where isbn = ?
+    """, (isbn,))
+    conn.commit()
+    conn.close()
+
+def borrar_libros_prestamos(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        DELETE FROM prestamos
+        WHERE id_ejemplar IN (
+            SELECT id_ejemplar
+            FROM ejemplares
+            WHERE id_libro = ?
+        )
+    """, (isbn,))
+    conn.commit()
+    conn.close()
+
+def buscar_libro_prestados(isbn):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT *
+        FROM prestamos
+        JOIN ejemplares e ON e.id_ejemplar = prestamos.id_ejemplar
+        WHERE e.id_libro = ?
+    """, (isbn,))
+    resultado = cursor.fetchall()
+    conn.close()
+    return resultado if resultado else None
+    
 
 
 

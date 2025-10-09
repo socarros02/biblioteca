@@ -3,6 +3,7 @@ from carpeta_libros import libros as lib
 
 
 class VentanaLibros(ctk.CTkFrame):
+
     def __init__(self, parent, controller):
         super().__init__(parent)
 

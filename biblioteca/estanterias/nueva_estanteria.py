@@ -1,7 +1,7 @@
 import numpy as np
 import customtkinter as ctk
 from data_base import data_base as db
-
+from CTkMessagebox import CTkMessagebox
 # Configuración de apariencia
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
 ctk.set_default_color_theme("blue")  # "blue", "green", "dark-blue"
@@ -50,6 +50,10 @@ def crear_estanteria(frame,controller):
             lbl_error.configure(text="Error: complete todos los campos")
             return
 
+        CTkMessagebox(title="Éxito",
+                      message=f"Estanteria creada con exito.",
+                      icon="check",
+                      master=controller)
         db.nueva_estanteria(nombre, capacidad)
         controller.mostrar_frame("VentanaPrincipal")
 

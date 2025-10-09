@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from data_base import data_base as db
+from CTkMessagebox import CTkMessagebox
 prestamo=0
 
 
@@ -13,11 +14,9 @@ def devolver_libro(frame,controller):
     global prestamo
     prestamo = 0
 
-
-    frame_header = ctk.CTkFrame(frame, fg_color="transparent")
-    frame_header.pack(pady=5, expand=True, fill="x")
-
-
+    lbl_lista = ctk.CTkLabel(frame, text="Lista de prestamos", font=("Arial", 45, "bold"))
+    lbl_lista.pack(pady=5, expand=True, fill="x")
+   
     frame_devolucion = ctk.CTkFrame(frame,fg_color="transparent")
     frame_devolucion.pack(pady=5, expand=True, fill="x")
 
@@ -25,8 +24,7 @@ def devolver_libro(frame,controller):
     contenedor = ctk.CTkFrame(frame)
     contenedor.pack(pady=5,expand=True,fill="x")
 
-    lbl_lista= ctk.CTkLabel(frame_header,text="Lista de prestamos",font=("Arial", 45, "bold"))
-    lbl_lista.pack(pady=5,expand=True,fill="x")
+
 
     prestamos = db.get_prestamos()
     if len(prestamos)>4:
@@ -96,9 +94,21 @@ def devolver_libro(frame,controller):
         except ValueError:
             lbl_error.configure(text="Ingrese datos validos")
             return
-        db.devolver_prestamos(devolucion)
-        controller.borrar_widget(contenedor)
+        msg = CTkMessagebox(title="Confirmar préstamo",
+                            message=f"¿Deseas finalizar el prestamo {devolucion}?",
+                            icon="question",
+                            option_1="Sí",
+                            option_2="No",
+                            master=controller)
+
+        if msg.get() == "Sí":
+            CTkMessagebox(title="Éxito",
+                          message=f"Prestamo {devolucion} finalizdo.",
+                          icon="check",
+                          master=controller)
+            db.devolver_prestamos(devolucion)
+            controller.mostrar_frame("VentanaDevolverLibro")
         prestamo=0
-        mostrar_siguiente()
+
     btn_devolucion = ctk.CTkButton(frame_devolucion, text="Devolucion",command=lambda:devolver_libro(controller))
     btn_devolucion.pack(pady=5,expand=True,fill="x")

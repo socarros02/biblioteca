@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from data_base import data_base as db
+from CTkMessagebox import CTkMessagebox
 
 biblioteca = db.get_estanterias()
 def encontrar_estanteria(id_estanteria):
@@ -54,8 +55,20 @@ def editar_libro(isbn,frame,controller,busqueda_frame,libro):
         except ValueError:
             lbl_error.configure(text="Estanteria no encontrada")
             return
-        db.editar_libro(isbn_nuevo, titulo, autor, publicacion, edicion,isbn)
-        controller.mostrar_frame("VentanaPrincipal")
+        msg = CTkMessagebox(title="Confirmar edicion",
+                            message=f"¿Confirmas que deseas editar este libro? Esta acción no se puede revertir. ",
+                            icon="question",
+                            option_1="Sí",
+                            option_2="No",
+                            master=controller)
+
+        if msg.get() == "Sí":
+            CTkMessagebox(title="Éxito",
+                          message=f"Edicion finalizada.",
+                          icon="check",
+                          master=controller)
+            db.editar_libro(isbn_nuevo, titulo, autor, publicacion, edicion,isbn)
+            controller.mostrar_frame("VentanaPrincipal")
 
     frame_siguiente= ctk.CTkFrame(frame, fg_color="transparent")
     frame_siguiente.pack(fill="x", expand=True, padx=5, pady=5)
