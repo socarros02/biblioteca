@@ -1,24 +1,24 @@
 import os
 import customtkinter as ctk
 from PIL import Image
-from data_base import data_base as db
-from gui.ven_estanterias_borrar import VentanaBorrarEstanteria
-from gui.ven_libros_borrar import VentanaBorrarLibro
+from src.data import data_base as db
+from src.gui.windows.estanterias.estanterias_borrar import VentanaBorrarEstanteria
+from src.gui.windows.libros.libros_borrar import VentanaBorrarLibro
 
-from gui.ven_principal import VentanaPrincipal
-from gui.ven_estanterias import VentanaEstanterias
-from gui.ven_estanterias_mostrar import VentanaMostrarEstanteria
-from gui.ven_estanterias_crear import VentanaCrearEstanteria
-from gui.ven_estanterias_editar import VentanaEditarEstanteria
-from gui.ven_libros import VentanaLibros
-from gui.ven_libros_mostrar import VentanaMostrarPrestarLibros
-from gui.ven_libros_autor import VentanaLibrosAutor
-from gui.ven_libros_nuevos_ejemplares import VentanaNuevosEjemplares
-from gui.ven_libros_editar import VentanaEditarLibros
-from gui.ven_prestar_libros import VentanaPrestarLibro
-from gui.ven_devolver_libros import VentanaDevolverLibro
-from gui.ven_prestar_mayor import VentanaMasPrestado
-from gui.ven_organizar import VentanaOrganizar
+from src.gui.windows.win_main import VentanaPrincipal
+from src.gui.windows.estanterias.estanterias import VentanaEstanterias
+from src.gui.windows.estanterias.estanterias_mostrar import VentanaMostrarEstanteria
+from src.gui.windows.estanterias.estanterias_crear import VentanaCrearEstanteria
+from src.gui.windows.estanterias.estanterias_editar import VentanaEditarEstanteria
+from src.gui.windows.libros.libros import VentanaLibros
+from src.gui.windows.libros.libros_mostrar import VentanaMostrarPrestarLibros
+from src.gui.windows.libros.libros_autor import VentanaLibrosAutor
+from src.gui.windows.libros.libros_nuevos_ejemplares import VentanaNuevosEjemplares
+from src.gui.windows.libros.libros_editar import VentanaEditarLibros
+from src.gui.windows.prestamos.prestar_libros import VentanaPrestarLibro
+from src.gui.windows.prestamos.devolver_libros import VentanaDevolverLibro
+from src.gui.windows.prestamos.prestar_mayor import VentanaMasPrestado
+from gui.ventanas.ven_organizar import VentanaOrganizar
 
 theme_path = os.path.join(os.path.dirname(__file__), "themes", "coffee.json")
 imagen = Image.open("themes/biblioteca.jpg")
