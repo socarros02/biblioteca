@@ -69,7 +69,7 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
     def prestar_ejemplar():
         titulo = txt_libro.get()
         nombre = txt_nombre.get()
-        if not nombre and not titulo:
+        if not nombre or not titulo:
             lbl_error.configure(text="No estan ingrsados todos los campos")
             return
         try:
