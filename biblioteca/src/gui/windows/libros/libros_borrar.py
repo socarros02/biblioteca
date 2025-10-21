@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from libros import libros_borrar as b_libros
+from src.logic.logic_libros import libros_borrar as b_libros
 
 
 class VentanaBorrarLibro(ctk.CTkFrame):

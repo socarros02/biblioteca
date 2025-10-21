@@ -52,7 +52,7 @@ def elegir_estanteria(frame,libro,controller):
             else:
                 raise ValueError
         except ValueError:
-            lbl_error.configure(text="La estanteria no puede soportar tantos libros, \ncambie otros libros de esa estanteria para poder realizar este cambio")
+            lbl_error.configure(text="La estanteria no puede soportar tantos logic_libros, \ncambie otros logic_libros de esa estanteria para poder realizar este cambio")
             return
 
     boton_ver_estanteria = ctk.CTkButton(frame, text="Elegir", command=confirmar_estanteria)

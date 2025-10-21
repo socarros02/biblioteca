@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import interfaz_estanteria as iu_estanteria
+from src.logic.estanterias import interfaz_estanteria as iu_estanteria
 
 
 class VentanaEstanterias(ctk.CTkFrame):

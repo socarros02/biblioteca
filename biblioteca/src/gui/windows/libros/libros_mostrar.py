@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from libros import mostrar_libro as p_libro
+from src.logic.logic_libros import mostrar_libro as p_libro
 
 
 class VentanaMostrarPrestarLibros(ctk.CTkFrame):

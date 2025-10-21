@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from libros import libros_editar as ed_libro
+from src.logic.logic_libros import libros_editar as ed_libro
 
 
 class VentanaEditarLibros(ctk.CTkFrame):

@@ -28,7 +28,7 @@ def crear_estanteria(frame,controller):
     txt_nombre_estanteria = ctk.CTkEntry(contenedor, placeholder_text="Ingresar nombre de estaneria nueva.....")
     txt_nombre_estanteria.grid(row=0, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
-    txt_capacidad_maxima = ctk.CTkEntry(contenedor, placeholder_text="Ingresar capacidad, maximo 150 libros.....")
+    txt_capacidad_maxima = ctk.CTkEntry(contenedor, placeholder_text="Ingresar capacidad, maximo 150 logic_libros.....")
     txt_capacidad_maxima.grid(row=1, column=0, columnspan=2, padx=5, pady=5, sticky="ew")
 
     lbl_error = ctk.CTkLabel(contenedor, text="", text_color="red")

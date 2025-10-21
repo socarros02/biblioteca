@@ -7,6 +7,9 @@ libro = 0
 ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
 ctk.set_default_color_theme("blue")  # opciones: "blue", "green", "dark-blue"
 
+def mostrar_libro(libro,controller):
+    controller.libro_seleccionado= db.get_libro_por_titulo(libro)
+    controller.mostrar_frame("VentanaMostrarPrestarLibros")
 
 def encontrar_estanteria(id):
     estanteria=db.get_estanterias()
@@ -18,8 +21,7 @@ def encontrar_estanteria(id):
 def abrir_mostrar_estanteria(frame,estanteria,controller):
     controller.borrar_widget(frame)
     estan=encontrar_estanteria(estanteria)
-    global libro
-    libro = 0
+
     libros = db.get_estanteria_completa(estanteria)
     frame_titulo = ctk.CTkFrame(frame)
     frame_titulo.pack(fill="x", expand=True, padx=5, pady=5)
@@ -27,69 +29,25 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
     contenedor.pack(fill="x", expand=True, padx=5, pady=5)
     lbl_header = ctk.CTkLabel(frame_titulo,text=f"Estanteria {estan['nombre']},codigo {estan['codigo']}",font=("Arial", 15, "bold"))
     lbl_header.pack(pady=5, expand=True, fill="x")
-    if len(libros)>5:
-        controles= ctk.CTkFrame(frame, corner_radius=15)
-        controles.pack(fill="x", expand=True, padx=5, pady=5)
 
+    for widget in contenedor.winfo_children():
+        widget.destroy()
 
-    def mostrar_siguiente():
-        global libro
-        posicion=0
+    scroll_frame = ctk.CTkScrollableFrame(contenedor,fg_color="transparent")
+    scroll_frame.pack(pady=20, expand=True, fill="x")
 
-        for widget in contenedor.winfo_children():
-            widget.destroy()
+    for libro in libros:
+        libro_actual = libro
+        contenedor_libro = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=10)
+        contenedor_libro.pack(fill="x", pady=5, padx=10, expand=True)
+        lbl_libro = ctk.CTkButton(
+            contenedor_libro,
+            text=f"{libro_actual['titulo']} - cantidad de ejemplares: {libro_actual['cantidad']}",
+            corner_radius=10,
+            command=lambda libroX=libro_actual['titulo']: mostrar_libro(libroX,controller)
+        )
+        lbl_libro.pack(fill="x", expand=True, padx=5, pady=5)
 
-        while posicion!=5 and libro<len(libros):
-            libro_actual = libros[libro]
-
-
-            lbl_libro = ctk.CTkLabel(
-                contenedor,
-                text=f"{libro_actual['titulo']} - cantidad de ejemplares: {libro_actual['cantidad']}",
-                corner_radius=10,
-                text_color="#333333",
-                fg_color="#F5EBE0",
-                anchor="center"
-            )
-            lbl_libro.pack(fill="x", expand=True, padx=5, pady=5)
-
-
-
-            libro+=1
-            posicion+=1
-        if len(libros)>5:
-            btn_siguiente = ctk.CTkButton(
-                controles,
-                text="siguiente",
-                corner_radius=8,
-                command=mostrar_siguiente
-            )
-            btn_siguiente.pack( padx=5, pady=5,side="right")
-            if libro > len(libros) - 1:
-                controller.borrar_widget(controles)
-            if libro > 5:
-                btn_anterior = ctk.CTkButton(
-                    controles,
-                    text="anterior",
-                    corner_radius=8,
-                    command=mostrar_anterior
-                )
-                btn_anterior.pack( padx=5, pady=5,side="left")
-
-
-    def mostrar_anterior():
-        global libro
-        contador=10
-        while libro%5!=0:
-            libro-=1
-            contador-=1
-        if contador!=10:
-            libro-=5
-        else:
-           libro-=10
-        if libro<5:
-            controller.borrar_widget(controles)
-        mostrar_siguiente()
 
     contenedor_prestamos = ctk.CTkFrame(frame, corner_radius=15, fg_color="#F5EBE0")
     contenedor_prestamos.pack(pady=5, expand=True, fill="x", padx=15)
@@ -135,5 +93,5 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
     btn_prestar = ctk.CTkButton(contenedor_prestamos, corner_radius=15,command=prestar_ejemplar,text="Prestar")
     btn_prestar.pack(pady=5, expand=True, fill="x", padx=15)
 
-    mostrar_siguiente()
+
 

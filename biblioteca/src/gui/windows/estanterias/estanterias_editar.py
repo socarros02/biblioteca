@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import editar_estanteria as e_estanteria
+from src.logic.estanterias import editar_estanteria as e_estanteria
 
 
 class VentanaEditarEstanteria(ctk.CTkFrame):

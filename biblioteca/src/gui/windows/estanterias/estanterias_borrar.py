@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import borrar_estanteria as b_estanteria
+from src.logic.estanterias import borrar_estanteria as b_estanteria
 
 
 class VentanaBorrarEstanteria(ctk.CTkFrame):

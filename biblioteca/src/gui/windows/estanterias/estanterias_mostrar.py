@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import mostrar_estanteria as m_estanteria
+from src.logic.estanterias import mostrar_estanteria as m_estanteria
 
 
 class VentanaMostrarEstanteria(ctk.CTkFrame):
@@ -8,7 +8,7 @@ class VentanaMostrarEstanteria(ctk.CTkFrame):
         self.controller = controller
 
         self.frame_estanteria = ctk.CTkFrame(self)
-        self.frame_estanteria.pack(fill="both", expand=True, padx=10, pady=10)
+        self.frame_estanteria.pack(fill="both", expand=True, padx=10)
 
         boton_volver = ctk.CTkButton(
             self, text="Volver",

@@ -1,5 +1,5 @@
 import customtkinter as ctk
-import nueva_estanteria as n_estanteria
+from src.logic.estanterias import nueva_estanteria as n_estanteria
 
 
 class VentanaCrearEstanteria(ctk.CTkFrame):

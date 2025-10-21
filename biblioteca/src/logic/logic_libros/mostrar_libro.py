@@ -3,10 +3,6 @@ import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 from src.data import data_base as db
 
-ctk.set_appearance_mode("dark")   # opciones: "light", "dark", "system"
-ctk.set_default_color_theme("blue")
-
-
 
 def mostrar_prestar_libro(frame,libro,controller,self):
 

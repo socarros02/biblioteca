@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from libros import libros_nuevo_ejemplar as e_libro
+from src.logic.logic_libros import libros_nuevo_ejemplar as e_libro
 
 
 class VentanaNuevosEjemplares(ctk.CTkFrame):

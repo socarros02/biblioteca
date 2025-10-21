@@ -18,7 +18,7 @@ from src.gui.windows.libros.libros_editar import VentanaEditarLibros
 from src.gui.windows.prestamos.prestar_libros import VentanaPrestarLibro
 from src.gui.windows.prestamos.devolver_libros import VentanaDevolverLibro
 from src.gui.windows.prestamos.prestar_mayor import VentanaMasPrestado
-from gui.ventanas.ven_organizar import VentanaOrganizar
+from src.gui.windows.organizador.organizar import VentanaOrganizar
 
 theme_path = os.path.join(os.path.dirname(__file__), "themes", "coffee.json")
 imagen = Image.open("themes/biblioteca.jpg")
