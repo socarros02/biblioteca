@@ -8,6 +8,7 @@ def cambiar_valores(codigo,frame_valores,controller):
 
     libros_en_estanteria = db.contar_ejemplares_por_estanteria(codigo)
 
+    estanterias = db.get_estanterias()
 
     txt_nombre_estanteria = ctk.CTkEntry(frame_valores, placeholder_text="Ingresar nombre de estaneria nueva.....")
     txt_nombre_estanteria.pack(fill="x", expand=True, padx=5,pady=5)
@@ -19,12 +20,20 @@ def cambiar_valores(codigo,frame_valores,controller):
     lbl_error.pack(fill="x", expand=True, padx=5,pady=5)
 
     def validar_ingreso():
+        nombreActual="a"
+        for estanteria in estanterias:
+            if estanteria['codigo']==codigo:
+                nombreActual = estanteria['nombre']
+
         nombre = txt_nombre_estanteria.get()
         capacidad_maxima = txt_capacidad_maxima.get()
         if not nombre or not capacidad_maxima:
             lbl_error.configure(text="Ingrese datos validos")
             return
-
+        for estanteria in estanterias:
+            if nombre == estanteria['nombre'] and nombre != nombreActual :
+                lbl_error.configure(text="Error: el nombre de la estaneria ya existe")
+                return
         try:
             capacidad = int(capacidad_maxima)
             if capacidad <= libros_en_estanteria or capacidad > 150:

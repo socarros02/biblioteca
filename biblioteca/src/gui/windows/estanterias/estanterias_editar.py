@@ -8,12 +8,17 @@ class VentanaEditarEstanteria(ctk.CTkFrame):
 
         self.controller = controller
 
-        frame_editar_estanteria = ctk.CTkFrame(self)
-        frame_editar_estanteria.pack(fill="both", expand=True, padx=10, pady=10)
+        self.frame_editar_estanteria = ctk.CTkFrame(self)
+        self.frame_editar_estanteria.pack(fill="both", expand=True, padx=10, pady=10)
 
         boton_volver = ctk.CTkButton(
             self, text="Volver",
             command=lambda: controller.mostrar_frame("VentanaPrincipal")
         )
         boton_volver.pack(pady=10)
-        e_estanteria.editar_estanteria(frame_editar_estanteria,controller)
+
+
+    def actualizarEditarEstanteria(self):
+        for widget in self.frame_editar_estanteria.winfo_children():
+            widget.destroy()
+        e_estanteria.editar_estanteria(self.frame_editar_estanteria, self.controller)

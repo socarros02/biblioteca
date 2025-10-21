@@ -10,6 +10,8 @@ ctk.set_default_color_theme("blue")  # "blue", "green", "dark-blue"
 
 def crear_estanteria(frame,controller):
 
+    estanterias = db.get_estanterias()
+
     frame.columnconfigure(0, weight=1)
     frame.rowconfigure(0, weight=1)
     frame.rowconfigure(1, weight=1)
@@ -40,13 +42,16 @@ def crear_estanteria(frame,controller):
         if not nombre or not capacidad_maxima:
             lbl_error.configure(text="Error: complete todos los campos")
             return
-
+        for estanteria in estanterias:
+            if nombre == estanteria['nombre']:
+                lbl_error.configure(text="Error: el nombre de la estaneria ya existe")
+                return
         try:
             capacidad = int(capacidad_maxima)
             if capacidad <= 0 or capacidad > 150:
                 raise ValueError
         except ValueError:
-            lbl_error.configure(text="Error: complete todos los campos")
+            lbl_error.configure(text="Error: la capacidad no esta en los limites")
             return
 
         CTkMessagebox(title="Éxito",
