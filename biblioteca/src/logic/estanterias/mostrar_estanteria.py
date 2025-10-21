@@ -38,13 +38,18 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
 
     for libro in libros:
         libro_actual = libro
+
+        def seleccionar_libro(titulo):
+            txt_libro.delete(0, "end")
+            txt_libro.insert(0, titulo)
+
         contenedor_libro = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=10)
         contenedor_libro.pack(fill="x", pady=5, padx=10, expand=True)
         lbl_libro = ctk.CTkButton(
             contenedor_libro,
             text=f"{libro_actual['titulo']} - cantidad de ejemplares: {libro_actual['cantidad']}",
             corner_radius=10,
-            command=lambda libroX=libro_actual['titulo']: mostrar_libro(libroX,controller)
+            command=lambda titulo=libro_actual['titulo']: seleccionar_libro(titulo)
         )
         lbl_libro.pack(fill="x", expand=True, padx=5, pady=5)
 
@@ -65,14 +70,14 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
         titulo = txt_libro.get()
         nombre = txt_nombre.get()
         if not nombre and not titulo:
-            lbl_error.configure(text="Ingrese datos validos")
+            lbl_error.configure(text="No estan ingrsados todos los campos")
             return
         try:
             existe = db.get_libro_por_titulo(titulo)
             if existe == None:
                 raise ValueError
         except ValueError:
-            lbl_error.configure(text="Estanteria no encontrada")
+            lbl_error.configure(text="Libro no encontrado")
             return
         ejemplar = db.get_id_ejemplar(existe['codigo'])
         msg = CTkMessagebox(title="Confirmar préstamo",

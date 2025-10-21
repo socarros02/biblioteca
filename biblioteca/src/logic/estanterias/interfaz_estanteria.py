@@ -31,6 +31,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
 
     for estanteria in biblioteca:
 
+
         fila_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent",corner_radius=5)
         fila_frame.pack(fill="x", pady=2)
         estanteria_actual = estanteria

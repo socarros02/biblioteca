@@ -12,7 +12,7 @@ class VentanaMostrarEstanteria(ctk.CTkFrame):
 
         boton_volver = ctk.CTkButton(
             self, text="Volver",
-            command=lambda: controller.mostrar_frame("VentanaPrincipal")
+            command=lambda: controller.mostrar_frame("VentanaEstanterias")
         )
         boton_volver.pack(pady=10)
 
