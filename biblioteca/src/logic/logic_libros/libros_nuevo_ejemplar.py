@@ -124,14 +124,20 @@ def nuevos_ejemplares(frame,controller):
     busqueda_frame = ctk.CTkFrame(frame, fg_color="transparent")
     busqueda_frame.pack(fill="x", pady=10, padx=10)
 
-    txt_isbn = ctk.CTkEntry(busqueda_frame, placeholder_text="Isbn del ejemplar...")
+    contenedor = ctk.CTkFrame(frame, fg_color="transparent")
+    contenedor.pack(fill="x", pady=10, padx=10)
+
+    scroll_frame = ctk.CTkScrollableFrame(contenedor, fg_color="transparent")
+    scroll_frame.pack(pady=20, expand=True, fill="x")
+
+    txt_isbn = ctk.CTkEntry(busqueda_frame, placeholder_text="Isbn del ejemplar, si el libro ya existe puede elegir clickeando abajo...")
     txt_isbn.pack(side="left", fill="x", expand=True, padx=5, pady=5)
 
 
     def elegir_libro():
         isbn = txt_isbn.get()
         libro = db.get_libro_por_codigo(isbn)
-        print(libro)
+        contenedor.destroy()
 
         if libro != None:
             frame_cantidad_ejemplares= ctk.CTkFrame(frame, fg_color="transparent")
@@ -141,9 +147,28 @@ def nuevos_ejemplares(frame,controller):
         else:
             frame_nuevo_libro = ctk.CTkFrame(frame, fg_color="transparent")
             frame_nuevo_libro.pack(fill="x", pady=10, padx=10)
+
             cargar_libro_nuevo(isbn,frame_nuevo_libro,controller)
 
     boton_ver_estanteria = ctk.CTkButton(busqueda_frame, text="Elegir", command=elegir_libro)
     boton_ver_estanteria.pack(side="left", padx=5,pady=5)
+
+
+    for libro in controller.libros:
+        libro_actual = libro
+
+        def seleccionar_libro(isbn):
+            txt_isbn.delete(0, "end")
+            txt_isbn.insert(0, isbn)
+        contenedor_libro = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=10)
+        contenedor_libro.pack(fill="x", pady=5, padx=10,expand=True)
+
+        btn_libro = ctk.CTkButton(
+            contenedor_libro,
+            text=f"📖 TITULO: {libro_actual['titulo']}  | CODIGO: {libro_actual['codigo']}  | AUTOR: {libro_actual['autor']}",
+            text_color="white",
+            command=lambda isbn=libro_actual['codigo']: seleccionar_libro(isbn)
+        )
+        btn_libro.pack(padx=10, pady=5,expand=True,fill="x")
 
 

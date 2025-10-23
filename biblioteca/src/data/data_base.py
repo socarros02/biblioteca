@@ -370,7 +370,7 @@ def buscar_libro_prestados(isbn):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT *
+        SELECT devolucion
         FROM prestamos
         JOIN ejemplares e ON e.id_ejemplar = prestamos.id_ejemplar
         WHERE e.id_libro = ?

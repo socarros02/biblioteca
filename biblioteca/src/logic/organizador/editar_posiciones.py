@@ -40,8 +40,6 @@ def elegir_estanteria(frame,libro,controller):
     contenedor= ctk.CTkFrame(frame)
     contenedor.pack(pady=5,expand=True,fill="x",padx=15)
 
-
-
     lbl_error = ctk.CTkLabel(frame, text="", text_color="red")
     lbl_error.pack(fill="x", expand=True, padx=5, pady=5)
 
@@ -79,7 +77,7 @@ def elegir_estanteria(frame,libro,controller):
             else:
                 raise ValueError
         except ValueError:
-            lbl_error.configure(text="La estanteria no puede soportar tantos logic_libros, \ncambie otros logic_libros de esa estanteria para poder realizar este cambio")
+            lbl_error.configure(text="La estanteria no puede soportar tantos libros, \ncambie otros libros de esa estanteria para poder realizar este cambio")
             return
 
     boton_ver_estanteria = ctk.CTkButton(frame, text="Elegir", command=confirmar_estanteria)
@@ -122,3 +120,22 @@ def cambiar_estanterias(frame, controller):
     boton_ver_estanteria.pack(side="left", padx=5, pady=5)
     lbl_error = ctk.CTkLabel(busqueda_frame, text="", text_color="red")
     lbl_error.pack(side="bottom", fill="x", expand=True, padx=5, pady=5)
+    scroll_frame = ctk.CTkScrollableFrame(contenedor,fg_color="transparent")
+    scroll_frame.pack(pady=20, expand=True, fill="x")
+
+    for libro in controller.libros:
+        libro_actual = libro
+
+        def seleccionar_libro(isbn):
+            txt_isbn.delete(0, "end")
+            txt_isbn.insert(0, isbn)
+        contenedor_libro = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=10)
+        contenedor_libro.pack(fill="x", pady=5, padx=10,expand=True)
+
+        btn_libro = ctk.CTkButton(
+            contenedor_libro,
+            text=f"📖 TITULO: {libro_actual['titulo']}  | CODIGO: {libro_actual['codigo']}  | AUTOR: {libro_actual['autor']}",
+            text_color="white",
+            command=lambda isbn=libro_actual['codigo']: seleccionar_libro(isbn)
+        )
+        btn_libro.pack(padx=10, pady=5,expand=True,fill="x")
