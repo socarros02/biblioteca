@@ -1,94 +1,154 @@
-# 📚 Biblioteca - Sistema de Gestión
+# 📚 Biblioteca – Sistema de Gestión de Libros
 
-![Biblioteca](assets/biblioteca.png)
+![Biblioteca](assets/biblioteca.png)  
+![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)  
+![SQLite](https://img.shields.io/badge/SQLite-Database-green?logo=sqlite)  
+![CustomTkinter](https://img.shields.io/badge/CustomTkinter-UI-orange)
 
-**Biblioteca** es una aplicación de escritorio desarrollada en **Python**, pensada para la gestión organizada de libros, autores, géneros y estanterías. Con una interfaz construida sobre **CustomTkinter**, permite manejar de forma intuitiva tanto la base de datos como la visualización del inventario de la biblioteca.
+**Biblioteca** es una aplicación de escritorio desarrollada en **Python** con **CustomTkinter** y **SQLite**, diseñada para la gestión completa de libros, ejemplares, estanterías y préstamos. Ofrece una interfaz moderna, intuitiva y adaptable, con soporte para modo claro/oscuro y temas personalizados.
 
 ---
 
 ## 📜 Índice
 
-* [🌟 Características Principales](#-características-principales)  
-* [🏗️ Arquitectura del Proyecto](#️-arquitectura-del-proyecto)  
-* [🛠️ Tecnologías Utilizadas](#️-tecnologías-utilizadas)  
-* [🚀 Instalación y Puesta en Marcha](#-instalación-y-puesta-en-marcha)  
-* [⚙️ Scripts de Mantenimiento](#️-scripts-de-mantenimiento)  
+* [🌟 Funcionalidades Principales](#-funcionalidades-principales)  
+* [🧠 Arquitectura del Proyecto](#-arquitectura-del-proyecto)  
+* [🗃️ Base de Datos](#-base-de-datos)  
+* [🧩 Ventanas Principales](#-ventanas-principales)  
+* [💻 Tecnologías Utilizadas](#-tecnologías-utilizadas)  
+* [🔐 Lógica de Funcionamiento Destacada](#-lógica-de-funcionamiento-destacada)  
+* [⚙️ Instalación y Ejecución](#-instalación-y-ejecución)  
+
 
 ---
 
-## 🌟 Características Principales
+## 🌟 Funcionalidades Principales
 
-La aplicación está diseñada para gestionar tanto los libros como sus ejemplares y ubicaciones.
+- **🧩 Gestión completa de libros y ejemplares**  
+  Todos los ejemplares de un libro se almacenan juntos en la misma estantería, manteniendo un orden lógico y físico. Permite agregar nuevos ejemplares, editar información o listar por autor.
 
-#### 📚 **Gestión de Libros y Autores**
-- Alta, baja y modificación de libros con sus datos principales (ISBN, título, autor, género, año, edición).  
-- Administración de autores y géneros para clasificar mejor el catálogo.  
+- **🔄 Movimientos de estanterías**  
+  Los movimientos entre estanterías se realizan con la cantidad completa de ejemplares del libro para conservar la organización del sistema.
 
-#### 🗄️ **Organización de Estanterías**
-- Creación y edición de estanterías.  
-- Visualización de los libros cargados por estantería.  
+- **🧹 Borrado seguro**  
+  Un libro solo puede eliminarse si todos sus ejemplares están devueltos. Esto evita la eliminación de registros con préstamos activos.
 
-#### 🔍 **Búsqueda**
-- Filtros para localizar libros por título, autor o género.  
-- Posibilidad de ver ejemplares asociados a cada libro.  
+- **📦 Gestión de préstamos**  
+  Préstamo y devolución de ejemplares individuales. Registro de libros más prestados y visualización por estantería.
 
-#### 🛠️ **Base de Datos Integrada**
-- El sistema trabaja con **SQLite**, con soporte para claves foráneas y relaciones entre libros, autores y géneros.  
+- **🎨 Interfaz moderna**  
+  Basada en **CustomTkinter**, con soporte para modo claro/oscuro y temas personalizados (ej. `coffee.json`). Diseño adaptable y simple para mejorar la experiencia del usuario.
+
+
+---
+## 🧠 Arquitectura del Proyecto
+
+```plaintext
+biblioteca/
+│
+├── main.py
+├── requirements.txt
+│
+├── src/
+│   ├── __init__.py
+│   │
+│   ├── data/
+│   │   ├── __init__.py
+│   │   └── data_base.py             # Conexión SQLite + CRUD completo
+│   │
+│   ├── gui/
+│   │   ├── __init__.py
+│   │   ├── win_main.py              # Ventana principal
+│   │   │
+│   │   └── windows/
+│   │       ├── libros/              # Gestión de libros y ejemplares
+│   │       ├── estanterias/         # CRUD y movimientos
+│   │       ├── prestamos/           # Préstamo y devolución
+│   │       └── organizador/         # Reportes y organización
+│   │
+│   └── themes/
+│       ├── coffee.json
+│       └── biblioteca.jpg
+│
+└── assets/
+    └── biblioteca.png
+```
+---
+
+## 🗃️ Base de Datos
+
+El sistema utiliza **SQLite** como base de datos local, gestionada mediante funciones en `data_base.py`.
+
+### Relaciones principales:
+- **Libro → Ejemplares** (uno a muchos)  
+- **Ejemplar → Préstamos** (uno a muchos)  
+- **Estantería → Libros** (uno a muchos)  
+
+Cada acción (préstamo, movimiento, eliminación) se registra para garantizar **integridad y trazabilidad** de los datos.
 
 ---
 
-## 🏗️ Arquitectura del Proyecto
+## 🧩 Ventanas Principales
 
-El proyecto sigue un estilo **MVC (Modelo-Vista-Controlador)** para mantener el código ordenado y escalable.
-
-1. **Modelo (Database / Lógica de datos)**  
-   - Tablas: `libros`, `autores`, `genero`, `ejemplares`, `estanterias`.  
-   - Acceso a datos encapsulado en `base_datos.py`.  
-
-2. **Vista (Interfaz gráfica)**  
-   - Construida con **CustomTkinter**.  
-   - Cada ventana/pantalla está modularizada en su propio archivo (ej: `mostrar_estanteria.py`, `mostrar_libro.py`).  
-
-3. **Controlador (Gestión de la lógica)**  
-   - Archivos que conectan la base de datos con la GUI.  
-   - Ejemplo: mover un libro de una estantería a otra, listar autores o ejemplares.  
+| Ventana | Descripción |
+|--------|-------------|
+| `VentanaPrincipal` | Menú inicial con acceso a todas las funcionalidades. |
+| `VentanaEstanterias` | Creación, edición y visualización de estanterías. |
+| `VentanaLibros` | Registro, edición y organización de libros y ejemplares. |
+| `VentanaPrestarLibro` | Gestión de préstamos de ejemplares individuales. |
+| `VentanaDevolverLibro` | Registro de devoluciones con validación automática. |
+| `VentanaOrganizar` | Reportes, ordenamiento y estadísticas del sistema. |
+| `VentanaBorrarLibro` / `VentanaBorrarEstanteria` | Eliminación segura con validaciones previas. |
 
 ---
 
-## 🛠️ Tecnologías Utilizadas
+## 💻 Tecnologías Utilizadas
 
-- **Lenguaje**: Python 3  
-- **Base de Datos**: SQLite 3  
-- **Interfaz Gráfica**: [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter)  
-- **Dependencias**: Pillow (para imágenes en la GUI)  
+| Tecnología       | Uso |
+|------------------|-----|
+| **Python 3.11+** | Lenguaje principal de desarrollo |
+| **CustomTkinter** | Interfaz gráfica moderna y personalizable |
+| **SQLite3** | Base de datos local ligera y embebida |
+| **Pillow (PIL)** | Manejo de imágenes en la interfaz |
+| **CTkMessageBox** | Cuadros de diálogo personalizados |
 
 ---
 
-## 🚀 Instalación y Puesta en Marcha
+## 🔐 Lógica de Funcionamiento Destacada
 
-#### 1. Prerrequisitos
-- Tener instalado **Python 3.8** o superior.  
+- **Integridad referencial**: No se permite eliminar libros con ejemplares prestados.  
+- **Ubicación unificada**: Todos los ejemplares de un libro permanecen en la misma estantería.  
+- **Reportes en tiempo real**: Libros más prestados, préstamos activos y disponibilidad por estantería.  
+- **Validaciones automáticas**: Evitan errores humanos y garantizan consistencia de datos.
 
-#### 2. Clonar el Repositorio
+---
+
+## ⚙️ Instalación y Ejecución
+
+### 1. Prerrequisitos
+- **Python 3.11 o superior**
+
+### 2. Clonar el repositorio
 ```bash
 git clone https://github.com/socarros02/biblioteca.git
 cd biblioteca
 ```
-#### 3. Crear un entorno virtual
+### 3. Crear entorno virtual
 ```bash
 # Windows
-python -m venv venv
-.\venv\Scripts\activate
+python -m venv .venv
+.\.venv\Scripts\activate
 
 # macOS / Linux
-python3 -m venv venv
-source venv/bin/activate
+python3 -m venv .venv
+source .venv/bin/activate
 ```
-#### 4. Instalar Dependencias
+### 4. Instalar dependencias
 ```bash
--pip install -r requirements.txt
+pip install -r requirements.txt
 ```
-#### 5.Ejecutar Python
+### 5. Ejecutar aplicacion
 ```bash
-- python main.py
+python main.py
 ```
+
