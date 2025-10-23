@@ -70,17 +70,46 @@ def editar_estanteria(frame,controller):
     busqueda_frame = ctk.CTkFrame(frame, fg_color="transparent")
     busqueda_frame.pack(fill="x", pady=10, padx=10)
 
-    caja_texto_ingresar_codigo = ctk.CTkEntry(busqueda_frame, placeholder_text="Código de estantería...")
-    caja_texto_ingresar_codigo.pack(side="left", fill="x", expand=True, padx=5, pady=5)
+    contenedor = ctk.CTkFrame(frame,fg_color="transparent")
+    contenedor.pack(padx=5,pady=5,fill="x",expand=True)
+
+    txt = ctk.CTkEntry(busqueda_frame, placeholder_text="Código de estantería...")
+    txt.pack(side="left", fill="x", expand=True, padx=5, pady=5)
     def elegir_estanteria():
-        codigo = int(caja_texto_ingresar_codigo.get())
+        codigo = int(txt.get())
         estanteria = db.get_estanteria_seleccionada(codigo)
         if estanteria != -1:
             frame_nuevos_valores= ctk.CTkFrame(frame, fg_color="transparent")
             frame_nuevos_valores.pack(fill="x", pady=10, padx=10)
             cambiar_valores(estanteria,frame_nuevos_valores,controller)
+            contenedor.destroy()
         else:
             print("La estantería no existe")
 
     boton_ver_estanteria = ctk.CTkButton(busqueda_frame, text="Elegir", command=elegir_estanteria)
     boton_ver_estanteria.pack(side="left", padx=5,pady=5)
+
+    scroll_frame = ctk.CTkScrollableFrame(contenedor)
+    scroll_frame.pack(expand=True, fill="x")
+    controller.borrar_widget(scroll_frame)
+    biblioteca = db.get_estanterias()
+
+    for estanteria in biblioteca:
+        def seleccionar_estanteria(estanteria):
+            txt.delete(0, "end")
+            txt.insert(0, estanteria)
+
+        fila_frame = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=5)
+        fila_frame.pack(fill="x", pady=2)
+        estanteria_actual = estanteria
+        disponible = estanteria_actual['capacidad'] - db.contar_ejemplares_por_estanteria(
+            estanteria_actual["codigo"])
+
+        btn_ver = ctk.CTkButton(
+            fila_frame,
+            text=f"🗄️{estanteria_actual['nombre']}   -   código {estanteria_actual['codigo']}  -   capacidad {estanteria_actual['capacidad']}  -  espacios disponibles {disponible}",
+            text_color="white",
+            command=lambda estanteriaX=estanteria_actual['codigo']: seleccionar_estanteria(estanteriaX),
+            width=25
+        )
+        btn_ver.pack(pady=5, padx=15, expand=True, fill="x")
