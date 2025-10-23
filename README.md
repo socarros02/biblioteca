@@ -1,6 +1,6 @@
 # 📚 Biblioteca – Sistema de Gestión de Libros
 
-![Biblioteca](assets/biblioteca.png)  
+![Biblioteca](https://res.cloudinary.com/devziffgy/image/upload/v1761229880/Captura_de_pantalla_2025-10-23_113059_trcjb8.png)  
 ![Python](https://img.shields.io/badge/Python-3.11%2B-blue?logo=python)  
 ![SQLite](https://img.shields.io/badge/SQLite-Database-green?logo=sqlite)  
 ![CustomTkinter](https://img.shields.io/badge/CustomTkinter-UI-orange)
