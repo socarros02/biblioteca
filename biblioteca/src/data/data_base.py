@@ -29,6 +29,25 @@ def get_libros():
     ]
 
 
+def buscar_libros(termino):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT isbn, titulo, fecha_publicacion, autor
+        FROM libros
+        WHERE titulo LIKE ?
+           OR autor LIKE ?
+           OR isbn LIKE ?
+    """, (f"%{termino}%", f"%{termino}%", f"%{termino}%"))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    return [
+        {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
+        for row in rows
+    ]
+
 def get_libro_por_titulo(titulo):
     conn = get_connection()
     cursor = conn.cursor()
@@ -48,61 +67,6 @@ def get_libro_por_titulo(titulo):
             for row in rows
         ]
     return []
-
-
-def get_libro_por_codigo(codigo):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT isbn, titulo, fecha_publicacion, autor
-        FROM libros
-        WHERE isbn LIKE ?
-    """, (f"%{codigo}%",))
-
-    rows = cursor.fetchall()
-    conn.close()
-
-    # Si hay resultados, devolver lista de diccionarios
-    if rows:
-        return [
-            {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
-            for row in rows
-        ]
-    return []
-
-def get_libro_titulo(titulo):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT isbn, titulo, fecha_publicacion, autor
-        FROM libros
-        WHERE titulo = ?
-    """, (titulo,))
-    row = cursor.fetchone()
-    conn.close()
-
-    if row:
-        return {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
-    return None
-
-
-def get_libros_por_autor(nombre_autor):
-    conn = get_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        SELECT isbn, titulo, fecha_publicacion, autor
-        FROM libros
-        WHERE autor LIKE ?
-    """, (f"%{nombre_autor}%",))
-    rows = cursor.fetchall()
-    conn.close()
-
-    # Devuelve una lista de diccionarios
-    return [
-        {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
-        for row in rows
-    ]
-
 
 def get_estanterias():
     conn = get_connection()

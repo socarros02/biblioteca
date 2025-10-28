@@ -7,94 +7,53 @@ def mostrar_libro(libro,controller):
     controller.libro_seleccionado= libro
     controller.libros = db.get_libros()
     controller.mostrar_frame("VentanaMostrarPrestarLibros")
+def lista_libros(scroll_frame, controller):
 
-
-
-def mostrar_libros(frame,controller):
-
-    busqueda = ctk.CTkFrame(frame,fg_color="transparent")
-    busqueda.pack(padx=5, pady=5,expand=True,fill="x")
-    controller.borrar_widget(busqueda)
-
-    busqueda_titulo = ctk.CTkFrame(busqueda,fg_color="transparent")
-    busqueda_titulo.pack(expand=True,fill="x")
-    busqueda_codigo = ctk.CTkFrame(busqueda,fg_color="transparent")
-    busqueda_codigo.pack(expand=True,fill="x")
-    busqueda_autor = ctk.CTkFrame(busqueda,fg_color="transparent")
-    busqueda_autor.pack(expand=True,fill="x")
-
-    scroll_frame = ctk.CTkScrollableFrame(frame)
-    scroll_frame.pack(pady=20,expand=True,fill="x")
+    controller.borrar_widget(scroll_frame)
 
     for libro in controller.libros:
-        libro_actual = libro
-
         contenedor_libro = ctk.CTkFrame(scroll_frame, fg_color="transparent", corner_radius=10)
-        contenedor_libro.pack(fill="x", pady=5, padx=10,expand=True)
+        contenedor_libro.pack(fill="x", pady=5, padx=10, expand=True)
 
         btn_libro = ctk.CTkButton(
             contenedor_libro,
-            text=f"📖 TITULO: {libro_actual['titulo']}  | CODIGO: {libro_actual['codigo']}  | AUTOR: {libro_actual['autor']}",
+            text=f"📖 TITULO: {libro['titulo']}  | CODIGO: {libro['codigo']}  | AUTOR: {libro['autor']}",
             text_color="white",
             anchor="w",
-            command=lambda libroX=libro_actual: mostrar_libro(libroX, controller)
+            command=lambda libroX=libro: mostrar_libro(libroX, controller)
         )
-        btn_libro.pack(padx=10, pady=5,expand=True,fill="x")
+        btn_libro.pack(padx=10, pady=5, expand=True, fill="x")
 
 
+def mostrar_libros(frame, controller):
+
+    busqueda = ctk.CTkFrame(frame, fg_color="transparent")
+    busqueda.pack(padx=5, pady=5, fill="x")
 
 
+    txt_buscar = ctk.CTkEntry(busqueda, placeholder_text="Buscar libro por código, título o autor...")
+    txt_buscar.pack(pady=5, padx=5, side="left", fill="x", expand=True)
 
-    def buscar_titulo():
-        titulo = txt_buscar_titulo.get()
-        libro = db.get_libro_por_titulo(titulo)
-        if libro:
-            controller.libros = db.get_libro_por_titulo(titulo)
-            controller.mostrar_frame("VentanaLibros")
+
+    scroll_frame = ctk.CTkScrollableFrame(frame,fg_color="transparent")
+    scroll_frame.pack(pady=20, expand=True, fill="both")
+
+
+    def buscar_libro():
+        termino = txt_buscar.get()
+        libros = db.buscar_libros(termino)
+        if libros:
+            controller.libros = libros
+
         else:
-            print("La estantería no existe")
-
-    def buscar_codigo():
-        codigo = txt_buscar_codigo.get()
-        libro = db.get_libro_por_codigo(codigo)
-        if libro:
-            controller.libros = db.get_libro_por_codigo(codigo)
-            controller.mostrar_frame("VentanaLibros")
-        else:
+            controller.libros = []
             print("No existe ese libro")
-
-    def buscar_autor():
-        autor = txt_buscar_autor.get()
-        libros_autor = db.get_libros_por_autor(autor)
-        if libros_autor:
-            controller.libros=db.get_libros_por_autor(autor)
-            controller.mostrar_frame("VentanaLibros")
-
-        else:
-            print("No existe ese autor")
+        lista_libros(scroll_frame, controller)
 
 
+    btn_buscar = ctk.CTkButton(busqueda, text="Buscar", command=buscar_libro)
+    btn_buscar.pack(pady=5, padx=5, side="left")
 
-    txt_buscar_titulo = ctk.CTkEntry(busqueda_titulo, placeholder_text="buscar libro por titulo...")
-    txt_buscar_titulo.pack(pady=5,padx=5,side="left",fill="x",expand=True)
-
-
-    txt_buscar_codigo = ctk.CTkEntry(busqueda_codigo, placeholder_text="buscar libro por codigo...")
-    txt_buscar_codigo.pack(pady=5,padx=5,side="left",fill="x",expand=True)
-
-    txt_buscar_autor = ctk.CTkEntry(busqueda_autor, placeholder_text="buscar libro por autor...")
-    txt_buscar_autor.pack(pady=5,padx=5,side="left",fill="x",expand=True)
-
-    btn_buscar_titulo = ctk.CTkButton(busqueda_titulo, text="buscar", command=buscar_titulo)
-    btn_buscar_titulo.pack(pady=5,padx=5,side="left")
-
-    btn_buscar_codigo = ctk.CTkButton(busqueda_codigo, text="buscar", command=buscar_codigo)
-    btn_buscar_codigo.pack(pady=5,padx=5,side="left")
-
-    btn_buscar_autor = ctk.CTkButton(busqueda_autor, text="buscar", command=buscar_autor)
-    btn_buscar_autor.pack(pady=5,padx=5,side="left")
-
-
-
+    lista_libros(scroll_frame, controller)
 
 
