@@ -55,7 +55,7 @@ class VentanaPrincipal(ctk.CTkFrame):
 
         def mostrar_eleccion_prestamos(choice):
             if choice == "Nuevo Prestamos":
-                controller.mostrar_frame("VentanaPrestarLibro")
+                controller.mostrar_frame("VentanaLibros")
             elif choice == "Devolver Libro":
                 controller.mostrar_frame("VentanaDevolverLibro")
             elif choice == "Libros mas prestados":

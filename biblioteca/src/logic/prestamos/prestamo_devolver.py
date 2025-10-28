@@ -55,6 +55,7 @@ def devolver_libro(frame,controller):
             item_frame.pack(pady=8, padx=10, fill="x")
 
             btn_prestamo = ctk.CTkButton(item_frame,text=f"📖 Préstamo: {prestamo['prestamo']}--📕Ejemplar: {prestamo['ejemplar']}--📚 Título: {prestamo['titulo']}--👤 Persona: {prestamo['persona']}",
+                                         anchor="w",
                                          command=lambda devolucion=prestamo['prestamo']:confirmar(controller,devolucion))
             btn_prestamo.pack(pady=5, expand=True, fill="x")
 

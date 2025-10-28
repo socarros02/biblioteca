@@ -12,10 +12,8 @@ from src.gui.windows.estanterias.estanterias_crear import VentanaCrearEstanteria
 from src.gui.windows.estanterias.estanterias_editar import VentanaEditarEstanteria
 from src.gui.windows.libros.libros import VentanaLibros
 from src.gui.windows.libros.libros_mostrar import VentanaMostrarPrestarLibros
-from src.gui.windows.libros.libros_autor import VentanaLibrosAutor
 from src.gui.windows.libros.libros_nuevos_ejemplares import VentanaNuevosEjemplares
 from src.gui.windows.libros.libros_editar import VentanaEditarLibros
-from src.gui.windows.prestamos.prestar_libros import VentanaPrestarLibro
 from src.gui.windows.prestamos.devolver_libros import VentanaDevolverLibro
 from src.gui.windows.prestamos.prestar_mayor import VentanaMasPrestado
 from src.gui.windows.organizador.organizar import VentanaOrganizar
@@ -57,11 +55,9 @@ class App(ctk.CTk):
                   VentanaMostrarEstanteria,
                   VentanaCrearEstanteria,
                   VentanaMostrarPrestarLibros,
-                  VentanaLibrosAutor,
                   VentanaEditarEstanteria,
                   VentanaNuevosEjemplares,
                   VentanaEditarLibros,
-                  VentanaPrestarLibro,
                   VentanaDevolverLibro,
                   VentanaMasPrestado,
                   VentanaOrganizar,

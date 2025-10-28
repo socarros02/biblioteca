@@ -82,6 +82,7 @@ def editar_estanteria(frame,controller):
             frame_nuevos_valores= ctk.CTkFrame(frame, fg_color="transparent")
             frame_nuevos_valores.pack(fill="x", pady=10, padx=10)
             cambiar_valores(estanteria,frame_nuevos_valores,controller)
+            busqueda_frame.destroy()
             contenedor.destroy()
         else:
             print("La estantería no existe")

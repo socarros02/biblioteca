@@ -27,28 +27,57 @@ def get_libros():
         {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
         for row in rows
     ]
+
+
 def get_libro_por_titulo(titulo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT isbn,titulo,fecha_publicacion,autor
-                   FROM libros
-                   WHERE titulo = ?
-                   """, (titulo,))
-    row = cursor.fetchone()
+        SELECT isbn, titulo, fecha_publicacion, autor
+        FROM libros
+        WHERE titulo LIKE ?
+    """, (f"%{titulo}%",))
+
+    rows = cursor.fetchall()
     conn.close()
-    if row:
-        return {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
-    return None
+
+    # Devuelve lista de diccionarios (vacía si no hay resultados)
+    if rows:
+        return [
+            {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
+            for row in rows
+        ]
+    return []
+
 
 def get_libro_por_codigo(codigo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT isbn,titulo,fecha_publicacion,autor
-                   FROM libros
-                   WHERE isbn = ?
-                   """, (codigo,))
+        SELECT isbn, titulo, fecha_publicacion, autor
+        FROM libros
+        WHERE isbn LIKE ?
+    """, (f"%{codigo}%",))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    # Si hay resultados, devolver lista de diccionarios
+    if rows:
+        return [
+            {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
+            for row in rows
+        ]
+    return []
+
+def get_libro_titulo(titulo):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT isbn, titulo, fecha_publicacion, autor
+        FROM libros
+        WHERE titulo = ?
+    """, (titulo,))
     row = cursor.fetchone()
     conn.close()
 
@@ -61,34 +90,41 @@ def get_libros_por_autor(nombre_autor):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-        SELECT autor
+        SELECT isbn, titulo, fecha_publicacion, autor
         FROM libros
-        WHERE autor like ?
-    """, (f"{nombre_autor}%",))
-    row = cursor.fetchone()
+        WHERE autor LIKE ?
+    """, (f"%{nombre_autor}%",))
+    rows = cursor.fetchall()
     conn.close()
-    return row[0] if row else None
+
+    # Devuelve una lista de diccionarios
+    return [
+        {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
+        for row in rows
+    ]
+
 
 def get_estanterias():
     conn = get_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT id, nombre,capacidad_maxima FROM estanterias")
+    cursor.execute("SELECT id, nombre, capacidad_maxima FROM estanterias")
     rows = cursor.fetchall()
     conn.close()
-    # devolver como lista de diccionarios, igual que antes
-    return [{"codigo": r[0], "nombre": r[1], "capacidad":r[2]} for r in rows]
+    return [{"codigo": r[0], "nombre": r[1], "capacidad": r[2]} for r in rows]
+
 
 def get_estanteria_seleccionada(codigo):
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute("""
-                   SELECT estanterias.id
+                   SELECT id
                    FROM estanterias
-                   WHERE estanterias.id = ?
-                   """, (codigo,))
+                   WHERE id LIKE ?
+                   """, (f"%{codigo}%",))
     row = cursor.fetchone()
     conn.close()
     return row[0] if row else None
+
 
 def get_estanteria_completa(codigo_estanteria):
     conn = get_connection()
@@ -98,13 +134,13 @@ def get_estanteria_completa(codigo_estanteria):
            count(e.id_ejemplar) as cantidad
     FROM ejemplares e
     JOIN libros l ON e.id_libro = l.isbn
-    where e.id_estanteria = ? and e.disponible = 1
-    group by l.titulo;
-    """, (codigo_estanteria,))
+    WHERE e.id_estanteria LIKE ? AND e.disponible = 1
+    GROUP BY l.titulo;
+    """, (f"%{codigo_estanteria}%",))
     rows = cursor.fetchall()
     conn.close()
     return [
-        {"titulo": r[0],"cantidad":r[1]}
+        {"titulo": r[0], "cantidad": r[1]}
         for r in rows
     ]
 

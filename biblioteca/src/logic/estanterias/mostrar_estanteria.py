@@ -49,6 +49,7 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
             contenedor_libro,
             text=f"{libro_actual['titulo']} - cantidad de ejemplares: {libro_actual['cantidad']}",
             corner_radius=10,
+            anchor="w",
             command=lambda titulo=libro_actual['titulo']: seleccionar_libro(titulo)
         )
         lbl_libro.pack(fill="x", expand=True, padx=5, pady=5)
@@ -57,7 +58,7 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
     contenedor_prestamos = ctk.CTkFrame(frame, corner_radius=15, fg_color="#F5EBE0")
     contenedor_prestamos.pack(pady=5, expand=True, fill="x", padx=15)
 
-    txt_libro = ctk.CTkEntry(contenedor_prestamos, corner_radius=15,placeholder_text="Libro que desea prestar")
+    txt_libro = ctk.CTkEntry(contenedor_prestamos, corner_radius=15,placeholder_text="Libro que desea prestar, puede clickear en la lista y se auto completara el campo")
     txt_libro.pack(pady=5,expand=True,fill="x",padx=15)
 
     lbl_error = ctk.CTkLabel(frame, text="", text_color="red")
@@ -73,7 +74,7 @@ def abrir_mostrar_estanteria(frame,estanteria,controller):
             lbl_error.configure(text="No estan ingrsados todos los campos")
             return
         try:
-            existe = db.get_libro_por_titulo(titulo)
+            existe = db.get_libro_titulo(titulo)
             if existe == None:
                 raise ValueError
         except ValueError:

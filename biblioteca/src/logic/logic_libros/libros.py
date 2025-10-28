@@ -5,13 +5,12 @@ import customtkinter as ctk
 
 def mostrar_libro(libro,controller):
     controller.libro_seleccionado= libro
+    controller.libros = db.get_libros()
     controller.mostrar_frame("VentanaMostrarPrestarLibros")
 
 
+
 def mostrar_libros(frame,controller):
-
-    controller.libros=db.get_libros()
-
 
     busqueda = ctk.CTkFrame(frame,fg_color="transparent")
     busqueda.pack(padx=5, pady=5,expand=True,fill="x")
@@ -37,6 +36,7 @@ def mostrar_libros(frame,controller):
             contenedor_libro,
             text=f"📖 TITULO: {libro_actual['titulo']}  | CODIGO: {libro_actual['codigo']}  | AUTOR: {libro_actual['autor']}",
             text_color="white",
+            anchor="w",
             command=lambda libroX=libro_actual: mostrar_libro(libroX, controller)
         )
         btn_libro.pack(padx=10, pady=5,expand=True,fill="x")
@@ -49,8 +49,8 @@ def mostrar_libros(frame,controller):
         titulo = txt_buscar_titulo.get()
         libro = db.get_libro_por_titulo(titulo)
         if libro:
-            controller.libro_seleccionado= libro
-            controller.mostrar_frame("VentanaMostrarPrestarLibros")
+            controller.libros = db.get_libro_por_titulo(titulo)
+            controller.mostrar_frame("VentanaLibros")
         else:
             print("La estantería no existe")
 
@@ -58,8 +58,8 @@ def mostrar_libros(frame,controller):
         codigo = txt_buscar_codigo.get()
         libro = db.get_libro_por_codigo(codigo)
         if libro:
-            controller.libro_seleccionado = libro
-            controller.mostrar_frame("VentanaMostrarPrestarLibros")
+            controller.libros = db.get_libro_por_codigo(codigo)
+            controller.mostrar_frame("VentanaLibros")
         else:
             print("No existe ese libro")
 
@@ -67,8 +67,8 @@ def mostrar_libros(frame,controller):
         autor = txt_buscar_autor.get()
         libros_autor = db.get_libros_por_autor(autor)
         if libros_autor:
-            controller.autor_seleccionado = libros_autor
-            controller.mostrar_frame("VentanaLibrosAutor")
+            controller.libros=db.get_libros_por_autor(autor)
+            controller.mostrar_frame("VentanaLibros")
 
         else:
             print("No existe ese autor")

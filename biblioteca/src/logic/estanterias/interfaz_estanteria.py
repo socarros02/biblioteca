@@ -41,6 +41,7 @@ def mostrar_estanterias_disponibles(biblioteca, frame,controller):
             fila_frame,
             text=f"🗄️{estanteria_actual['nombre']}   -   código {estanteria_actual['codigo']}  -   capacidad {estanteria_actual['capacidad']}  -  espacios disponibles {disponible}",
             text_color="white",
+            anchor="w",
             command=lambda estanteriaX=estanteria_actual['codigo']: mostrar_estanteria(estanteriaX, controller),
             width=25
         )
