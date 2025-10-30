@@ -68,6 +68,22 @@ def get_libro_por_titulo(titulo):
         ]
     return []
 
+def get_libro_por_codigo(codigo):
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("""
+        SELECT isbn, titulo, fecha_publicacion, autor
+        FROM libros
+        WHERE isbn LIKE ?
+    """, (f"%{codigo}%",))
+
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        return {"codigo": row[0], "titulo": row[1], "fecha": row[2], "autor": row[3]}
+    return None
+
 def get_estanterias():
     conn = get_connection()
     cursor = conn.cursor()
